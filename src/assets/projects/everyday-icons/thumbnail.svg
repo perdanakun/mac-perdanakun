@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="360" viewBox="0 0 1000 750" preserveAspectRatio="xMidYMid slice">
+  <title>Everyday Icons — thumbnail placeholder</title>
+  <rect width="1000" height="750" fill="#F4C76B"/>
+  <circle cx="720" cy="230" r="210" fill="#FFFFFF" fill-opacity=".2"/>
+  <rect x="280" y="180" width="440" height="360" rx="48" fill="#FFFFFF" fill-opacity=".28" transform="rotate(-6 500 360)"/>
+  <path d="M420 380h160M500 300v160" stroke="#25303D" stroke-opacity=".18" stroke-width="20" stroke-linecap="round"/>
+  <g fill="#25303D" font-family="Arial, sans-serif">
+    <text x="60" y="78" font-size="22" letter-spacing="3">PROJECT 01</text>
+    <text x="60" y="633" font-size="42" font-weight="700">Everyday Icons</text>
+    <text x="60" y="681" font-size="24">Icon Design · Thumbnail placeholder</text>
+  </g>
+</svg>
+

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1000 750" preserveAspectRatio="xMidYMid slice">
+  <title>Launch Ads — visual 2 placeholder</title>
+  <rect width="1000" height="750" fill="#EAEFF8"/>
+  <circle cx="230" cy="230" r="210" fill="#FFFFFF" fill-opacity=".2"/>
+  <rect x="280" y="180" width="440" height="360" rx="48" fill="#FFFFFF" fill-opacity=".28" transform="rotate(6 500 360)"/>
+  <path d="M420 380h160M500 300v160" stroke="#25303D" stroke-opacity=".18" stroke-width="20" stroke-linecap="round"/>
+  <g fill="#25303D" font-family="Arial, sans-serif">
+    <text x="60" y="78" font-size="22" letter-spacing="3">PROJECT 08</text>
+    <text x="60" y="633" font-size="42" font-weight="700">Launch Ads</text>
+    <text x="60" y="681" font-size="24">Social Media Ads · Visual 2 placeholder</text>
+  </g>
+</svg>
+
