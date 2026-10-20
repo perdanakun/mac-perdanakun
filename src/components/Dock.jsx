@@ -17,7 +17,7 @@ function DockItem({ app, pointer, geometry, iconSize, mobile, open, onOpen }) {
   return (
     <li className="dock-item" data-divider={app.dividerBefore || undefined}
       style={mobile ? { minWidth: Math.max(44, iconSize * artScale + 4) } : undefined}>
-      <motion.button type="button" className="dock-button" aria-label={app.label} aria-haspopup="dialog"
+      <motion.button type="button" className="dock-button" data-dock-app={app.id} aria-label={app.label} aria-haspopup="dialog"
         style={mobile ? undefined : { width: slotWidth }}
         onClick={event => {
           if (!reduced) void bounce.start({ y: [0, mobile ? -8 : -14, 0], transition: { duration: .38, ease: ['easeOut', 'easeIn'] } });
@@ -39,13 +39,13 @@ function DockItem({ app, pointer, geometry, iconSize, mobile, open, onOpen }) {
 export default function Dock({ apps, mobile, openIds, onOpen }) {
   const ref = useRef(null);
   const pointer = useMotionValue(Infinity);
-  const [metrics, setMetrics] = useState({ icon: 52, button: 60 });
+  const [metrics, setMetrics] = useState({ icon: 36, button: 44 });
   useLayoutEffect(() => {
     const update = () => {
       pointer.set(Infinity);
       const css = getComputedStyle(ref.current);
-      setMetrics({ icon: parseFloat(css.getPropertyValue('--dock-icon-size')) || 52,
-        button: parseFloat(css.getPropertyValue('--dock-button-width')) || 60 });
+      setMetrics({ icon: parseFloat(css.getPropertyValue('--dock-icon-size')) || 36,
+        button: parseFloat(css.getPropertyValue('--dock-button-width')) || 44 });
     };
     update();
     window.addEventListener('resize', update);

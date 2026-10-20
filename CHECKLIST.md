@@ -1,41 +1,15 @@
-# Checklist manual — Chrome, Safari Mac, dan ponsel asli
+# Cek cepat
 
-Checklist browser berikut belum dijalankan di lingkungan ini.
+Checklist browser berikut belum dijalankan dalam lingkungan pengerjaan ini.
 
-## Fullscreen dan resize
-
-- Pindah/resize Notes, klik hijau: empat tepi menempel ke viewport dan menu/Dock tertutup.
-- Hijau/Esc mengembalikan frame hasil resize; Esc lagi menutup window biasa.
-- Fullscreen Finder lalu buka proyek/app lain: window baru tampil di depan dan Finder kembali normal.
-- Minimize fullscreen lalu buka dari Dock; status fullscreen kembali.
-- Resize browser ketika fullscreen, lalu restore; title bar tetap terjangkau.
-- Tarik keempat sisi dan sudut sampai batas minimum/desktop. Sisi berlawanan tetap.
-- Tarik window background, lepas pointer di luar window, lalu drag lagi; tidak ada gesture tersangkut.
-- Tab ke handle; arrow 10px dan Shift+arrow 40px.
-- Resize → maximize → restore → drag memakai frame yang benar.
-
-## Dock
-
-- Hover kiri ke kanan: ikon bertumbuh, tetangga bergeser, glass melebar, tidak bertumpuk atau bergetar.
-- Keluar Dock: ukuran dasar kembali. Coba satu iconScale: 1.2 untuk memastikan slot tetap cukup.
-- Klik semua app; tooltip/dot/ikon kosong-penuh Trash benar.
-- Reduce Motion menonaktifkan magnifikasi dan bounce.
-
-## Finder dan Trash
-
-- Projects menampilkan kategori; double-click folder; Back/Forward/breadcrumb berfungsi.
-- Desktop menampilkan proyek; search dan Icons/List berfungsi.
-- Enter/double-click membuka proyek. Applications membuka app yang benar.
-- Move to Trash menyembunyikan proyek dari Desktop/Gallery/Finder dan menutup proyek yang terbuka.
-- Trash Dock dan Trash Finder menunjukkan item yang sama.
-- Put Back/Put Back All mengembalikan proyek.
-- Empty Trash → Cancel mempertahankan item; konfirmasi mengosongkan tampilan virtual.
-- Refresh mempertahankan state; reset memakai perintah dalam panduan.
-
-## Mobile dan regresi
-
-- Geser Dock horizontal untuk mengakses delapan ikon; target minimal 44px dan tidak ada magnifikasi.
-- Finder/Trash membuka sheet; satu tap membuka folder/proyek.
-- Search, keyboard ponsel, scroll daftar, dan swipe header tetap normal.
-- Notes, Gallery, Mail, CTA skill, wallpaper/crop, menu transparan dan ikon lama tetap benar.
-- Tidak ada request aset 404/error console pada root maupun /designer/.
+- [ ] Chrome dan Safari: header menyatu dengan wallpaper tanpa pita blur/solid pada Light/Dark; menu dan appearance tetap terbaca.
+- [ ] Buka View → Hide Desktop Icons: thumbnail hilang; buka lagi View → Show Desktop Icons: kembali pada posisi drag terakhir.
+- [ ] Saat ikon disembunyikan: Finder/Gallery/Spotlight tetap bisa membuka karya, window yang sudah terbuka tetap ada.
+- [ ] Sembunyikan ikon, resize layar, tampilkan lagi: bounds tidak melewati menu atau Dock. Mobile tetap menampilkan grid.
+- [ ] Tab dan Enter bisa menjalankan toggle; thumbnail tersembunyi tidak bisa menerima fokus. Esc menutup menu tanpa menutup window di belakangnya.
+- [ ] Finder pada header semibold600; menu/body400 dan label500. Tidak ada heading/strong melonjak extra-bold.
+- [ ] Dock berjarak16px + safe-area dari bawah; hover tetap membesarkan kaca dan ikon tanpa overlap. Drag/resize window tetap berhenti di atas Dock.
+- [ ] Uji glass pada wallpaper detail/kontras dalam Light/Dark; Dock/sidebar/titlebar/alert/banner/popover lebih tembus dan blur. Isi dokumen tetap terbaca.
+- [ ] Reduced motion/reduced transparency/forced-colors tetap berfungsi.
+- [ ] Ponsel nyata: grid2kolom, Dock tidak menutupi karya, safe-area, sheet, search dan tombol close tetap berfungsi.
+- [ ] npm run build dan preview root; ulangi dengan VITE_BASE=/designer/ bila memakai subpath.

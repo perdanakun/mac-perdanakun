@@ -1,76 +1,58 @@
-# Fase 4 — replacement interaksi
+# Transparent UI refine
 
-Baseline: mac-os-perdana.zip terbarumu. Tetap Vite + React JSX, satu stylesheet CSS, dan framer-motion. Tidak ada dependency baru.
+Paket kecil lanjutan untuk **perdana-ui-light-dark-replacement.zip** yang sudah kamu pasang. Bukan proyek baru atau paket kumulatif dari repo lama.
 
-## Pasang di VS Code
+## Pasang
 
-1. Buat salinan folder project.
-2. Salin folder src/ dalam paket ke root project yang sudah memiliki package.json. Gabungkan folder dan replace file yang berubah. Ini folder replacement, bukan project baru.
-3. Salin LICENSE-THIRD-PARTY. Folder tests/ opsional untuk pemeriksaan logika.
-4. Jika kamu mengedit lagi setelah mengirim ZIP, gabungkan perubahan melalui REPLACEMENTS.md atau changes.patch.
-5. Jalankan `npm run dev`. Build: `npm run build`. Pemeriksaan logika: `node tests/interactions.mjs`.
+1. Backup/commit kode yang sekarang.
+2. Ekstrak ZIP, salin folder src/ ke root proyek (folder yang memiliki package.json), pilih Replace. Merge folder; jangan hapus src/ lama.
+3. Ada lima file replacement lengkap: src/App.jsx, src/components/Desktop.jsx, src/components/MenuBar.jsx, src/data/profile.js dan src/styles.css.
+4. Jalankan `npm run dev`, lalu `npm run build`.
 
-Alternatif: `git apply --check /path/ke/changes.patch`, lalu `git apply /path/ke/changes.patch` bila pemeriksaan lolos. Patch sudah diuji terhadap baseline ZIP unggahan.
+Jangan menambahkan CSS di bawah file lama; ganti styles.css secara utuh. Tidak perlu dependency baru, mengganti assets, atau mengubah config Vite/Vercel.
 
-Wallpaper WebP, enam SVG Dock milikmu, projects.js, dan komponen Notes/Mail/Gallery/MenuBar/Thumbnail tidak diubah. Stylesheet replacement mempertahankan menu transparan dan aturan unggahan, dengan penyesuaian interaksi. Profile.js mempertahankan isian unggahan serta menambah konfigurasi/ikon Finder dan Trash.
-
-## Fullscreen
-
-- Hijau atau double-click title bar mengisi viewport halaman: x=0, y=0, lebar/tinggi layar, tanpa border/radius.
-- Window berada di atas menu dan Dock. Ini fullscreen halaman, bukan F11 browser.
-- Hijau atau Esc pertama mengembalikan ukuran/posisi tersimpan. Esc berikutnya pada window biasa menutup window.
-- Fokus/membuka window lain mengembalikan window fullscreen sebelumnya ke frame normal.
-- Minimize dari fullscreen mempertahankan statusnya saat dibuka kembali.
-- Tab tetap berada dalam window fullscreen; traffic lights tetap tersedia.
-
-## Resize
-
-Tarik keempat sisi atau keempat sudut. Minimum project/Mail/Trash 360 × 240; Notes/Gallery/Finder 480 × 240, menyesuaikan jika viewport lebih kecil. Window normal tetap dalam area menu–Dock; resize nonaktif saat fullscreen.
-
-Handle adalah button: Tab ke handle, gunakan arrow untuk perubahan 10px, Shift+arrow untuk 40px pada sisi terkait. Hasil resize disimpan sehingga maximize → restore kembali ke ukuran tersebut.
-
-## Finder
-
-Finder baru ada di paling kiri Dock. Ia menjelajahi data portfolio, bukan drive komputer pengunjung.
-
-- Projects: folder kategori otomatis dari projects.js.
-- Desktop: semua proyek yang masih tersedia.
-- Applications: app Dock yang bisa dibuka.
-- Trash: isi yang sama dengan app Trash.
-
-Desktop: klik memilih, double-click/Enter membuka. Mobile: satu tap membuka. Back/Forward, breadcrumb, search folder, Icons/List, dan status jumlah item berfungsi.
-
-Pilih proyek lalu Move to Trash atau Delete/Backspace saat tombol file fokus. Folder kategori dan aplikasi tidak dibuang.
-
-## Trash virtual
-
-Memindahkan proyek ke Trash menyembunyikannya dari Desktop/Gallery/Finder dan menutup window proyek tersebut. Put Back mengembalikan satu, Put Back All mengembalikan semuanya. Empty Trash memiliki langkah konfirmasi.
-
-Status tersimpan pada sessionStorage tab ini dan bertahan saat refresh. Empty Trash menyembunyikan item untuk sesi tab tersebut; source dan gambar asli tidak dihapus. Reset demo dari console browser:
+Jika sudah mengedit bio/contact di profile.js setelah ZIP sebelumnya, pertahankan kontenmu dan cukup tambahkan item ini ke `profile.menuBar.menus` → View → items:
 
 ```js
-sessionStorage.removeItem('perdana.files.v1');
-location.reload();
+{ label: 'Hide Desktop Icons', showLabel: 'Show Desktop Icons', action: 'toggle-desktop-icons' }
 ```
 
-## Dock
+Alternatif Git: changes.patch ditujukan ke source dari ZIP Light/Dark sebelumnya. Dari root proyek, jalankan `git apply --check /path/changes.patch`, kemudian `git apply /path/changes.patch`. Pilih salah satu: copy replacement atau apply patch.
 
-Width/height ikon dan lebar slot tombol kini membesar bersama. Tetangga bergeser dan background glass memakai width: max-content mengikuti isi. Pengukuran memakai pusat layout dasar, bukan posisi ikon yang sedang berubah. Spring 460/30/0.45 dan magnifikasi maksimum 1.45 dipertahankan.
+## Perubahan
 
-iconScale dan iconScaleMobile tetap bisa diatur di dockApps; slot menyediakan ruang tambahan untuk artwork yang diperbesar. Bounce, tooltip, divider, dot, dan fallback tetap ada. Reduce Motion menonaktifkan magnifikasi/bounce.
+- Header: background transparan, tanpa backdrop blur/border/shadow pada bar. Dropdown View/Appearance tetap memakai glass. Bayangan teks kecil tetap ada agar terbaca di foto.
+- View → Hide Desktop Icons berubah menjadi Show Desktop Icons setelah diklik. Hanya thumbnail desktop disembunyikan; posisi drag, window terbuka dan akses karya melalui Finder/Gallery/Search dipertahankan. Show Desktop yang lama tetap meminimalkan window.
+- Toggle berlaku selama halaman aktif dan reset saat reload. Mobile tetap menampilkan grid agar karya bisa diakses ketika menu desktop tidak tersedia.
+- Font: regular400, medium500, semibold600. Finder/nama aktif di header turun800→600; menu/clock400, judul window/list/label500, heading utama maksimal600. Strong/bold bawaan browser tidak lagi melonjak700.
+- Dock: gap bawah16px + safe-area di desktop/mobile, ukuran ikon dan magnification tetap seperti sebelumnya. Bounds thumbnail/window mengikuti ukuran Dock yang diukur.
+- Glass: blur umum/Dock32px, kontrol kecil10px. Opacity Dock Light8%/Dark12%; sidebar Light35%/Dark32%; popover Light48%/Dark50%; notifikasi Light28%/Dark30%. Dialog/titlebar memakai material lebih tipis juga.
+- Parent window dibuat clear ketika blur didukung supaya titlebar dapat mem-blur wallpaper/window di belakangnya. Panel konten/gambar tetap punya permukaan yang nyaman dibaca.
 
-Mobile tidak memakai magnifikasi. Delapan ikon diakses lewat Dock horizontal yang bisa digeser, dengan target minimal 44px.
+## Atur sendiri
 
-Ikon baru yang dapat diganti:
+Semua ada di src/styles.css:
 
-- src/assets/dock/finder.svg
-- src/assets/dock/trash.svg
-- src/assets/dock/trash-full.svg
+```css
+:root {
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --dock-bottom: 16px;
+  --dock-blur: 32px;
+  --glass-blur: 32px;
+  --dock-surface: rgb(255 255 255 / .08);
+}
+```
 
-Ketiganya SVG placeholder original. Trash berganti ikon ketika berisi item. Untuk PNG, ubah import terkait di profile.js.
+Dark overrides ada di `:root[data-theme="dark"]`. --dock-bottom juga ada di media query mobile; ubah keduanya bila ingin gap berbeda. Nilai alpha material menentukan tint/transparansi; blur menentukan seberapa lembut detail di belakangnya. Glass CSS tetap merupakan pendekatan visual dari referensi, bukan refraction native1:1.
 
-## Verifikasi
+Jika OS/browser meminta reduced transparency atau tidak mendukung backdrop-filter, material glass memakai fallback solid. Header biasa tetap transparan. Forced-colors memakai warna sistem agar kontrol terbaca.
 
-Build `/` dan `/designer/` lolos. Tes logika mencakup 200 kasus resize, frame restore/fokus/fullscreen, siklus Trash, dan ruang slot Dock. Static render memeriksa Finder/Trash, delapan app, delapan handle normal, serta geometri fullscreen. Seluruh 35 aset tersambung pada kedua base. Aset lama identik byte-for-byte. Patch juga telah diterapkan pada salinan baseline dan menghasilkan replacement identik.
+## Validasi
 
-Uji visual/pointer/gesture browser nyata belum dilakukan di lingkungan ini. Gunakan CHECKLIST.md di Chrome, Safari Mac, dan ponsel asli. Kita masih di fase 4.
+Lulus: build `/` dan `/designer/`, referensi asset, render statis seluruh app/menu/search, markup Desktop visible/hidden yang mempertahankan8thumbnail, serta tes existing200resizecases/fullscreen/focus/Trash/Dock dan tema/search.
+
+Patch sudah diuji apply pada source ZIP sebelumnya dan hasil lima file cocok persis. Semua source lain, data karya, foto, ikon dan config tidak diubah.
+
+Belum diuji langsung secara visual/interaktif di Chrome/Safari/ponsel. Gunakan CHECKLIST.md sebelum push. Tidak ada push/deploy otomatis.

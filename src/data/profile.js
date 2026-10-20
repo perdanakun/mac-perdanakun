@@ -1,3 +1,39 @@
+import ui_wifi from '../assets/ui/wifi.svg?no-inline';
+import ui_battery from '../assets/ui/battery.svg?no-inline';
+import ui_control_center from '../assets/ui/control-center.svg?no-inline';
+import ui_sun from '../assets/ui/sun.svg?no-inline';
+import ui_moon from '../assets/ui/moon.svg?no-inline';
+import ui_auto from '../assets/ui/auto.svg?no-inline';
+import ui_message from '../assets/ui/message.svg?no-inline';
+import ui_bell from '../assets/ui/bell.svg?no-inline';
+
+import ui0 from '../assets/ui/folder.svg?no-inline';
+import ui1 from '../assets/ui/file.svg?no-inline';
+import ui2 from '../assets/ui/desktop.svg?no-inline';
+import ui3 from '../assets/ui/apps.svg?no-inline';
+import ui4 from '../assets/ui/trash.svg?no-inline';
+import ui5 from '../assets/ui/gallery.svg?no-inline';
+import ui6 from '../assets/ui/notes.svg?no-inline';
+import ui7 from '../assets/ui/mail.svg?no-inline';
+import ui8 from '../assets/ui/chevron-left.svg?no-inline';
+import ui9 from '../assets/ui/chevron-right.svg?no-inline';
+import ui10 from '../assets/ui/chevron-down.svg?no-inline';
+import ui11 from '../assets/ui/grid.svg?no-inline';
+import ui12 from '../assets/ui/list.svg?no-inline';
+import ui13 from '../assets/ui/search.svg?no-inline';
+import ui14 from '../assets/ui/info.svg?no-inline';
+import ui15 from '../assets/ui/close.svg?no-inline';
+import ui16 from '../assets/ui/external.svg?no-inline';
+import ui17 from '../assets/ui/download.svg?no-inline';
+import ui18 from '../assets/ui/send.svg?no-inline';
+import ui19 from '../assets/ui/sidebar.svg?no-inline';
+import ui20 from '../assets/ui/check.svg?no-inline';
+import ui21 from '../assets/ui/person.svg?no-inline';
+import ui22 from '../assets/ui/link.svg?no-inline';
+import ui23 from '../assets/ui/restore.svg?no-inline';
+import ui24 from '../assets/ui/brand.svg?no-inline';
+import ui25 from '../assets/ui/folder-color.svg?no-inline';
+
 import desktopWallpaper from '../assets/wallpapers/desktop.webp?no-inline';
 import mobileWallpaper from '../assets/wallpapers/mobile.webp?no-inline';
 import illustratorIcon from '../assets/dock/illustrator.svg?no-inline';
@@ -12,8 +48,8 @@ import trashFullIcon from '../assets/dock/trash-full.png?no-inline';
 
 const base = import.meta.env.BASE_URL;
 
-// Original letter icons, not official product logos.
-// Replace src/assets/dock/*.svg with your own icons using the same filenames.
+// Dock assets supplied by you. Both PNG and SVG imports are supported.
+// Replace the imports above to swap them; UI placeholders are mapped in uiIcons below.
 // Set an app's icon to '' below to use its inline fallback instead.
 const makeIcon = (glyph, start, end, ink = '#FFFFFF') => {
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
@@ -35,15 +71,47 @@ export const profile = {
   role: 'Graphic & Visual Designer',
   location: 'Salatiga, Indonesia',
   menuLabel: 'Portfolio',
+  appearance: {
+    dayStart: 6, nightStart: 18,
+    title: 'Appearance', description: 'Auto follows your local time: light from 6 AM to 6 PM.',
+    options: [ { id: 'auto', label: 'Auto', icon: 'auto' }, { id: 'light', label: 'Light', icon: 'sun' }, { id: 'dark', label: 'Dark', icon: 'moon' } ],
+  },
+  spotlight: {
+    title: 'Search portfolio', placeholder: 'Search projects and apps', empty: 'No matching projects or apps.',
+    resultsLabel: 'Search results', application: 'Application', hint: '↑ ↓ to browse · Enter to open · Esc to close',
+  },
+  notifications: {
+    label: 'Portfolio notifications', close: 'Dismiss notification', now: 'now',
+    items: [
+      { id: 'welcome', appId: 'mail', title: 'Perdana', message: 'Welcome to my website! Feel free to explore.', delay: 900, duration: 12000 },
+      { id: 'bio', appId: 'notes', title: 'A little about me', message: 'Open Notes to read my bio, experience, and services.', action: 'notes', noteId: 'about', delay: 2100, duration: 18000 },
+    ],
+  },
   menuBar: {
-    locale: 'en-GB',
-    clockOptions: { weekday: 'short', hour: '2-digit', minute: '2-digit', hour12: false },
+    menusLabel: 'Portfolio menu', defaultApp: 'Finder',
+    wifiLabel: 'Wi-Fi icon (visual indicator)', batteryLabel: 'Battery icon (visual indicator)',
+    searchLabel: 'Search portfolio', controlsLabel: 'Appearance controls',
+    windowsLabel: 'Open windows', noWindows: 'No open windows',
+    menus: [
+      { id: 'file', label: 'File', items: [ { label: 'Open Finder', action: 'finder' }, { label: 'View Gallery', action: 'gallery' }, { label: 'Contact Perdana', action: 'mail' } ] },
+      { id: 'edit', label: 'Edit', secondary: true, items: [ { label: 'Find…', action: 'search', shortcut: '⌘ / Ctrl K' } ] },
+      { id: 'view', label: 'View', items: [ { label: 'Appearance…', action: 'appearance' }, { label: 'Hide Desktop Icons', showLabel: 'Show Desktop Icons', action: 'toggle-desktop-icons' }, { label: 'Show Desktop', action: 'desktop' } ] },
+      { id: 'window', label: 'Window', items: [ { label: 'Minimize', action: 'minimize' }, { label: 'Zoom', action: 'zoom' }, { label: 'Close Window', action: 'close' } ] },
+      { id: 'help', label: 'Help', secondary: true, items: [ { label: 'About Perdana', action: 'about' }, { label: 'Get in touch', action: 'mail' }, { label: 'Show welcome', action: 'welcome' } ] },
+    ],
+    brandIcon: 'brand',
+    brandLabel: 'Perdana’s portfolio',
+    locale: 'en-US',
+    clockOptions: { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true },
+    mobileClockOptions: { hour: 'numeric', minute: '2-digit', hour12: true },
   },
   notesApp: {
     title: 'Notes',
     sectionLabel: 'Portfolio',
     documentLabel: 'CV & experience',
     listLabel: 'Profile notes',
+    foldersLabel: 'Folders', folderLabel: 'All Notes', search: 'Search notes',
+    noteSingular: 'note', notePlural: 'notes', emptyMessage: 'No matching notes.',
   },
   galleryApp: {
     title: 'Gallery',
@@ -56,10 +124,14 @@ export const profile = {
     emptyMessage: 'No projects in this collection yet.',
   },
   finderApp: {
+    nameColumn: 'Name', kindColumn: 'Kind', yearColumn: 'Year',
+    info: 'Get Info', infoTitle: 'Info', general: 'General', preview: 'Preview',
+    selected: 'selected', imageCount: 'Images', dimensions: 'Dimensions', source: 'Location',
     title: 'Finder', sidebarLabel: 'Finder locations', favorites: 'Favorites',
     locations: { desktop: 'Desktop', projects: 'Projects', applications: 'Applications', trash: 'Trash' },
     locationSymbols: { desktop: '▣', projects: '▱', applications: '⊞', trash: '⌑' },
     kinds: { folder: 'Folder', app: 'Application', project: 'Design project' },
+    viewLabel: 'View options',
     back: 'Back', forward: 'Forward', grid: 'Icons', list: 'List', search: 'Search this folder',
     pathLabel: 'Folder path', filesLabel: 'Folder contents', item: 'item', items: 'items',
     open: 'Open', moveToTrash: 'Move to Trash', emptyMessage: 'No items in this folder.',
@@ -72,6 +144,8 @@ export const profile = {
     cancel: 'Cancel', confirmEmpty: 'Empty Trash',
   },
   ui: {
+    clearSearch: 'Clear search', done: 'Done', to: 'To', subject: 'Subject',
+    contactOptions: 'Contact options', compose: 'Contact Perdana',
     desktop: 'Design projects',
     dock: 'Skills and information',
     openProject: 'Open project',
@@ -219,3 +293,41 @@ export const notes = [
     items: [],
   },
 ];
+
+export const uiIcons = {
+  'wifi': ui_wifi,
+  'battery': ui_battery,
+  'control-center': ui_control_center,
+  'sun': ui_sun,
+  'moon': ui_moon,
+  'auto': ui_auto,
+  'message': ui_message,
+  'bell': ui_bell,
+
+  'folder': ui0,
+  'file': ui1,
+  'desktop': ui2,
+  'apps': ui3,
+  'trash': ui4,
+  'gallery': ui5,
+  'notes': ui6,
+  'mail': ui7,
+  'chevron-left': ui8,
+  'chevron-right': ui9,
+  'chevron-down': ui10,
+  'grid': ui11,
+  'list': ui12,
+  'search': ui13,
+  'info': ui14,
+  'close': ui15,
+  'external': ui16,
+  'download': ui17,
+  'send': ui18,
+  'sidebar': ui19,
+  'check': ui20,
+  'person': ui21,
+  'link': ui22,
+  'restore': ui23,
+  'brand': ui24,
+  'folder-color': ui25,
+};

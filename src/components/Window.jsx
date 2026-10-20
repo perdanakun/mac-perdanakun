@@ -5,6 +5,7 @@ import { useSurfaceFocus } from '../hooks/useSurfaceFocus.js';
 import { resizeEdges, useWindowResize } from '../hooks/useWindowResize.js';
 import { collapseTransform, fitFrame, rectOf, viewportFrame } from '../utils/geometry.js';
 import { profile } from '../data/profile.js';
+import UIIcon from './UIIcon.jsx';
 
 const spring = { type: 'spring', stiffness: 420, damping: 36, mass: .8 };
 const zoomTransition = { duration: .24, ease: [.2, .8, .2, 1] };
@@ -65,7 +66,7 @@ export default function Window({ record, order, focused, blocked, onFocus, onClo
     enabled: !record.maximized && present && !blocked && !record.minimized,
     read: readFrame, apply: applyFrame, settle,
     commit: next => onMove(record.id, next),
-    minimum: { width: ['notes', 'gallery', 'finder'].includes(record.kind) ? 480 : 360, height: 240 },
+        minimum: { width: ['notes', 'gallery', 'finder'].includes(record.kind) ? 480 : record.kind === 'info' ? 300 : 360, height: 240 },
   });
   const drag = usePointerDrag({
     enabled: !record.maximized && present && !blocked && !record.minimized,
@@ -126,7 +127,7 @@ export default function Window({ record, order, focused, blocked, onFocus, onClo
             </svg></span>
           </button>
         </div>
-        <h1 id={`${record.id}-title`}>{record.title}</h1>
+        <h1 id={`${record.id}-title`}><UIIcon name={record.kind === 'project' ? 'file' : record.kind === 'finder' ? 'folder' : record.kind} size={14} /><span>{record.title}</span></h1>
         <span className="titlebar-spacer" aria-hidden="true" />
       </header>
       <div className={`window__content window__content--${record.kind}`}>{children}</div>
