@@ -10,7 +10,7 @@ const locationIcons = { desktop: 'desktop', projects: 'folder', applications: 'a
 export default function FinderApp({ projects, apps, mobile, onOpenProject, onOpenApp, onInspect, onTrash, trashProps }) {
   const text = profile.finderApp;
   const [history, setHistory] = useState({ paths: ['projects'], index: 0 });
-  const [view, setView] = useState('grid');
+  const [view, setView] = useState('list');
   const [query, setQuery] = useState('');
   const [selection, setSelection] = useState(null);
   const list = useRef(null);

@@ -27,7 +27,7 @@ export default function Sheet({ record, blocked, onClose, children }) {
       <header className="sheet__header" title={profile.ui.swipeHint}
         onPointerDown={event => { if (!event.target.closest('button, a')) controls.start(event); }}>
         <span className="sheet__grabber" aria-hidden="true" />
-        <h1 id={`${record.id}-sheet-title`}><UIIcon name={record.kind === 'project' ? 'file' : record.kind} size={18} /><span>{record.title}</span></h1>
+        <h1 id={`${record.id}-sheet-title`}><UIIcon name={record.kind === 'project' ? 'file' : record.kind === 'finder' ? 'folder' : record.kind} size={18} /><span>{record.title}</span></h1>
         <button type="button" className="sheet__close" aria-label={`${profile.ui.close}: ${record.title}`}
           onClick={() => onClose(record.id)}>
           <span aria-hidden="true"><svg viewBox="0 0 12 12" focusable="false"><path d="m3.5 3.5 5 5m0-5-5 5" /></svg></span>

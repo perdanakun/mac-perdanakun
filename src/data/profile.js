@@ -31,19 +31,19 @@ import ui20 from '../assets/ui/check.svg?no-inline';
 import ui21 from '../assets/ui/person.svg?no-inline';
 import ui22 from '../assets/ui/link.svg?no-inline';
 import ui23 from '../assets/ui/restore.svg?no-inline';
-import ui24 from '../assets/ui/brand.svg?no-inline';
-import ui25 from '../assets/ui/folder-color.svg?no-inline';
+import ui24 from '../assets/reference/brand.svg?no-inline';
+import ui25 from '../assets/reference/folder.png?no-inline';
 
 import desktopWallpaper from '../assets/wallpapers/desktop.webp?no-inline';
 import mobileWallpaper from '../assets/wallpapers/mobile.webp?no-inline';
 import illustratorIcon from '../assets/dock/illustrator.svg?no-inline';
 import photoshopIcon from '../assets/dock/photoshop.svg?no-inline';
 import figmaIcon from '../assets/dock/figma.svg?no-inline';
-import galleryIcon from '../assets/dock/gallery.svg?no-inline';
-import notesIcon from '../assets/dock/notes.svg?no-inline';
-import mailIcon from '../assets/dock/mail.png?no-inline';
-import finderIcon from '../assets/dock/finder.png?no-inline';
-import trashIcon from '../assets/dock/trash.png?no-inline';
+import galleryIcon from '../assets/reference/gallery.png?no-inline';
+import notesIcon from '../assets/reference/notes.png?no-inline';
+import mailIcon from '../assets/reference/mail.png?no-inline';
+import finderIcon from '../assets/reference/finder.png?no-inline';
+import trashIcon from '../assets/reference/trash.png?no-inline';
 import trashFullIcon from '../assets/dock/trash-full.png?no-inline';
 
 const base = import.meta.env.BASE_URL;
@@ -232,65 +232,43 @@ export const skillDialogs = {
   },
 };
 
-// A single note renderer can display paragraphs and optional structured items.
-// Edit or replace this starter copy with your final portfolio text.
+// Notes accept paragraphs (strings or inline { text, href } fragments), optional
+// item links, and a links list. Missing URLs render as plain text.
 export const notes = [
   {
-    id: 'about',
-    title: 'About',
+    id: 'about', title: 'About me', summary: 'Visual design, icons, and a little about me.',
     paragraphs: [
-      'Hi, I’m Perdana, a graphic and visual designer based in Salatiga, Indonesia.',
-      'I’ve spent 10+ years working in visual design. Iconography is my specialty, alongside branding, illustration, packaging, and social media visuals.',
-      'Add a short paragraph about how you work and the kinds of projects you want to take on.',
-    ],
-    items: [],
+      'Hi, I’m Perdana, a visual designer based in Salatiga, Indonesia.',
+      'I’ve spent 10+ years in visual design. Iconography is my specialty, alongside branding, illustration, packaging, and social media visuals.',
+      ['Find me on ', { text: 'LinkedIn', href: 'https://www.linkedin.com/in/perdanakun/' }, ' or visit ',
+        { text: 'my website', href: 'https://perdanakun.com' }, '.'],
+    ], items: [],
   },
   {
-    id: 'experience',
-    title: 'Experience',
-    paragraphs: ['A few selected chapters from my design practice.'],
+    id: 'experience', title: 'Experience', summary: 'Selected roles in visual design.', paragraphs: [],
     items: [
-      {
-        title: 'Visual Designer — Conania',
-        meta: '2016–2026',
-        description: 'Add 2–3 specific responsibilities or achievements from your visual design work.',
-      },
-      {
-        title: 'Social Media Designer — Sinidikara',
-        meta: '2019–2022',
-        description: 'Add the types of campaigns, content formats, or visual systems you worked on.',
-      },
+      { title: 'Visual Designer — Conania', meta: '2016–2026', description: '' },
+      { title: 'Social Media Designer — Sinidikara', meta: '2019–2022', description: '' },
     ],
   },
   {
-    id: 'education',
-    title: 'Education',
-    paragraphs: [],
+    id: 'education', title: 'Education', summary: 'Institut Kesenian Jakarta.', paragraphs: [],
+    items: [{ title: 'Institut Kesenian Jakarta', meta: '2017–2021',
+      description: 'Bachelor of Design, Visual Communication Design.' }],
+  },
+  {
+    id: 'services', title: 'Services', summary: 'Icons, branding, illustration, and more.', paragraphs: [],
     items: [
-      {
-        title: 'Institut Kesenian Jakarta',
-        meta: 'Visual Communication Design · 2017–2021',
-        description: 'Bachelor of Design. Add relevant coursework or distinctions if useful.',
-      },
+      { title: 'Icon Design', description: 'Custom icons and consistent icon families.' },
+      { title: 'Branding', description: 'Visual identities and brand applications.' },
+      { title: 'Illustration', description: 'Characters and visual storytelling.' },
+      { title: 'Packaging', description: 'Labels and packaging graphics.' },
+      { title: 'Social Media', description: 'Campaign visuals and adaptable ad layouts.' },
     ],
   },
   {
-    id: 'services',
-    title: 'Services',
-    paragraphs: ['Visual design support for brands, products, and campaigns.'],
-    items: [
-      { title: 'Icon Design', meta: '', description: 'Custom icons and consistent icon families.' },
-      { title: 'Branding', meta: '', description: 'Visual identities and brand applications.' },
-      { title: 'Illustration', meta: '', description: 'Characters, spot illustrations, and visual storytelling.' },
-      { title: 'Packaging', meta: '', description: 'Labels, packaging graphics, and product families.' },
-      { title: 'Social Media Ads', meta: '', description: 'Campaign visuals and adaptable ad layouts.' },
-    ],
-  },
-  {
-    id: 'clients',
-    title: 'Clients',
-    paragraphs: ['Add selected client names and a brief line about the work here.'],
-    items: [],
+    id: 'links', title: 'Links', summary: 'Website and social profiles.', paragraphs: [], items: [],
+    links: profile.contact.links.filter(link => link.href),
   },
 ];
 

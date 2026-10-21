@@ -25,6 +25,7 @@ export default function Window({ record, order, focused, blocked, onFocus, onClo
   const height = useMotionValue(frame.height);
   const geometryAnimations = useRef([]);
   const previousZoom = useRef(record.maximized);
+  const sidebarWindow = ['finder', 'notes', 'gallery'].includes(record.kind);
   const initial = useRef(null);
   if (!initial.current) initial.current = collapseTransform(record.origin, frame);
 
@@ -94,7 +95,7 @@ export default function Window({ record, order, focused, blocked, onFocus, onClo
   return (
     <motion.section ref={ref} role="dialog" aria-modal={record.maximized || undefined} aria-labelledby={`${record.id}-title`} tabIndex={-1}
       aria-hidden={inactive || undefined} inert={inactive}
-      className="window" data-kind={record.kind} data-focused={focused && !inactive} data-maximized={record.maximized}
+      className="window" data-kind={record.kind} data-sidebar-window={sidebarWindow || undefined} data-focused={focused && !inactive} data-maximized={record.maximized}
       style={{ left, top, width, height, zIndex: (record.maximized ? 600 : 20) + order,
         pointerEvents: inactive ? 'none' : 'auto', transformOrigin: '0 0' }}
       initial={reduced ? { opacity: 0 } : initial.current}
@@ -130,7 +131,21 @@ export default function Window({ record, order, focused, blocked, onFocus, onClo
         <h1 id={`${record.id}-title`}><UIIcon name={record.kind === 'project' ? 'file' : record.kind === 'finder' ? 'folder' : record.kind} size={14} /><span>{record.title}</span></h1>
         <span className="titlebar-spacer" aria-hidden="true" />
       </header>
-      <div className={`window__content window__content--${record.kind}`}>{children}</div>
+      <div className={`window__content window__content--${record.kind}`}
+        onPointerMove={drag.handlers.onPointerMove}
+        onPointerUp={drag.handlers.onPointerUp}
+        onPointerCancel={drag.handlers.onPointerCancel}
+        onLostPointerCapture={drag.handlers.onLostPointerCapture}
+        onPointerDown={event => {
+          if (sidebarWindow && event.target.closest('.app-toolbar') && !event.target.closest('button, a, input, label')) {
+            drag.handlers.onPointerDown(event);
+          }
+        }}
+        onDoubleClick={event => {
+          if (sidebarWindow && event.target.closest('.app-toolbar') && !event.target.closest('button, a, input, label') && !drag.dragged.current) {
+            onZoom(record.id);
+          }
+        }}>{children}</div>
       {!record.maximized && resizeEdges.map(edge => <button key={edge} type="button"
         className={`window-resize window-resize--${edge}`} data-edge={edge}
         aria-label={`${profile.ui.resizeEdges[edge]}: ${record.title}`} {...resize} />)}

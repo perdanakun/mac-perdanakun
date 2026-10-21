@@ -16,7 +16,6 @@ export default function AlertDialog({ app, dialog, trigger, onClose, onContact }
         inert={!present} className="alert-dialog"
         initial={reduced ? undefined : { scale: .94, y: 12 }} animate={{ scale: 1, y: 0 }}
         transition={{ type: 'spring', stiffness: 440, damping: 30 }}>
-        <img src={app.icon || app.fallbackIcon} alt="" width={64} height={64} />
         <h2 id={`skill-${app.id}-title`}>{dialog.title}</h2>
         <p className="skill-context">{dialog.context}</p>
         <p id={`skill-${app.id}-message`}>{dialog.message}</p>

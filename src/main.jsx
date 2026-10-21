@@ -3,7 +3,9 @@ import { createRoot } from 'react-dom/client';
 import App from './App.jsx';
 import { profile } from './data/profile.js';
 import { readAppearance, resolveAppearance } from './utils/appearance.js';
+import './design-tokens.css';
 import './styles.css';
+import './reference-ui.css';
 
 // Resolve before mounting so the first app frame uses the correct palette.
 let appearanceMode = 'auto';

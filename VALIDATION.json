@@ -1,0 +1,49 @@
+{
+  "checks": [
+    "Finder geometry: full-height flush sidebar, no inset radius",
+    "Drag from sidebar header",
+    "Drag from integrated toolbar",
+    "Minimize and Dock restore",
+    "Zoom / restore geometry",
+    "Window corner resize",
+    "Finder toolbar at minimum window width",
+    "Spotlight keyboard search and project opening",
+    "Skill Alert CTA opens Mail",
+    "Gallery category filter and single compact header",
+    "Notes tabs",
+    "Lean Notes layout, searchable link labels and working external links",
+    "Notes: two non-overlapping solid panes in light theme",
+    "Live dark theme",
+    "Notes: two non-overlapping solid panes in dark theme",
+    "Menubar dropdown keyboard close",
+    "Virtual Trash and restore",
+    "Responsive home and Finder at 360px",
+    "Responsive home and Finder at 390px",
+    "Responsive home and Finder at 768px",
+    "Responsive home and Finder at 820px",
+    "Mobile sheet swipe closes Notes",
+    "No broken loaded images or runtime errors"
+  ],
+  "errors": [],
+  "surface_checks": [
+    "finder light: flush panes, no overlap, solid colors",
+    "notes light: flush panes, no overlap, solid colors",
+    "gallery light: flush panes, no overlap, solid colors",
+    "finder dark: flush panes, no overlap, solid colors",
+    "notes dark: flush panes, no overlap, solid colors",
+    "gallery dark: flush panes, no overlap, solid colors"
+  ],
+  "builds": [
+    "production root /: passed",
+    "production base /portfolio/: passed"
+  ],
+  "revision": "Flat window panes, simplified Notes/Gallery, clickable note links",
+  "browser": "Chromium (headless)",
+  "viewports": [
+    360,
+    390,
+    768,
+    820,
+    1440
+  ]
+}

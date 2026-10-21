@@ -66,7 +66,7 @@ export default function Thumbnail({ project, position, index, mobile, open, onOp
 
   return (
     <motion.div ref={ref} className={`thumbnail thumbnail--${project.size || 'm'}`}
-      style={mobile ? undefined : { left, top }}
+      style={mobile ? { left: 0, top: 0 } : { left, top }}
       initial={reduced ? { opacity: 0 } : { opacity: 0, scale: .82, y: 10 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       transition={reduced ? { duration: .12 } : { type: 'spring', stiffness: 380, damping: 26, delay: index * .045 }}>
