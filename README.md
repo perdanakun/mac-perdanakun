@@ -1,6 +1,34 @@
-# Perdana — UI replacement, panel fix
+# Perdana — unified UI radius
 
-Full project source. This revision fixes the overlapping window surfaces and simplifies Notes and Gallery using the latest `notes(1).PNG` and `gallery(1).PNG` layout references.
+Full project source, including the previous panel fix and linked Notes layout. All rounded HTML/CSS UI components now share one radius token.
+
+## Change all radii
+
+Edit one value in `src/design-tokens.css`:
+
+```css
+:root {
+  --radius-ui: 8px;
+}
+```
+
+Window, Dock, notifications, dropdowns, Appearance, Search, dialogs, buttons, search fields, sidebar selections, Finder entries, Gallery tiles, tooltips, note rows and mobile controls consume this token. Previous component-specific tokens are compatibility aliases pointing to it, not separate values. All 63 positive hardcoded CSS radius declarations have been replaced, including mobile overrides.
+
+Set `--radius-ui: 4px` for squarer corners or `12px` for softer corners. No separate dark-theme edit is required.
+
+Intentional structural corners stay flush: the sidebar/content seam, maximized windows, transparent resize handles and the bottom edge of mobile sheets. Pseudo-surfaces that use `inherit` follow their parent. The geometry of embedded icon artwork is part of its SVG/bitmap, rather than a CSS radius.
+
+## Apply only the CSS update
+
+If you already use the last panel-fix revision, replace these three files together:
+
+- `src/design-tokens.css`
+- `src/styles.css`
+- `src/reference-ui.css`
+
+No import change or new dependency is required. This keeps local edits in your other project files intact. The archive also includes the full project for a complete replacement.
+
+The supplied light alpha values (`.10` for panel and Dock) are preserved; dark alpha stays at the values in your pasted file (`.72` panel, `.39` Dock). The explicitly requested glass surfaces no longer get forced opaque by the reduced-transparency override. The thin-rim treatment from the previous border guidance is included.
 
 ## Install
 
@@ -71,6 +99,6 @@ The prior SVG-derived traffic controls, icons, material densities, buttons, popu
 
 ## Verification
 
-See `VALIDATION.json`: production builds at `/` and `/portfolio/`, Chromium interaction checks, mobile widths 360/390/768/820, real external-link activation with intercepted destination navigation, plus surface checks for Finder/Notes/Gallery in both themes. Those surface checks confirm flush edges, matching heights, no overlap/gap at the seam, expected colors, no window-level blur and no pseudo-frame.
+`VALIDATION.json` records the current production builds at `/` and `/portfolio/`, 23 functional/browser checks and 80 radius/appearance assertions across light/dark and mobile. The checks include changing the shared token live from 8px to 4px and back, plus keeping the requested Dock transparency when the browser reports reduced transparency.
 
-Desktop geometry adapts to mobile controls and sheets. Native font rendering and SVG blend equivalents elsewhere can differ by browser; the note and gallery panes use explicit solid colors.
+The remaining panel and link behavior is checked through window drag/resize, Spotlight, Notes links, Gallery filtering, virtual Trash and sheets at 360/390/768/820px widths. `SOURCE-MANIFEST.json` records the source hashes included in this archive.

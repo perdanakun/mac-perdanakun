@@ -1,6 +1,8 @@
 /* UI reference tokens. Source: references/ui/*.svg.
- * Exact source geometry/colors: Finder, Alert, notification, window controls,
- * Menubar Menu and desktop Dock. Material tint levels: Materials Light/Dark.
+ * Reference geometry/colors: Finder, Alert, notification, window controls,
+ * Menubar Menu and desktop Dock. Current user overrides unify radii at 8px
+ * and use the supplied light material alpha of .10. Dark alpha is retained.
+ * Material tint levels otherwise originate in Materials Light/Dark.
  * Materials export uses CSS blur(15px), despite Figma radius metadata of 30.
  * Dark panel colors (no dark panel specimen supplied), typography on non-Apple
  * systems, and browser blend/shadow equivalents are calibrated approximations.
@@ -8,6 +10,8 @@
  * on a whole surface: only its background tint is translucent.
  */
 :root {
+  /* Change this one value to update every rounded UI component. */
+  --radius-ui: 8px;
   --font-ui: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Segoe UI", sans-serif;
   --weight-regular: 400;
   --weight-medium: 500;
@@ -40,14 +44,14 @@
   --color-danger: #ff3b30;
   --fill-secondary: rgb(0 0 0 / .08);
   --fill-tertiary: rgb(0 0 0 / .05);
-  --window-radius: 12px;
+  --window-radius: var(--radius-ui);
   --toolbar-height: 48px;
   --app-toolbar-height: 56px;
   --traffic-size: 14px;
   --traffic-slot: 23px;
   --traffic-inactive: rgb(0 0 0 / .15);
-  --button-radius: 5px;
-  --dialog-radius: 26px;
+  --button-radius: var(--radius-ui);
+  --dialog-radius: var(--radius-ui);
   --content-padding: 24px;
   --notes-sidebar-width: 224px;
   --gallery-sidebar-width: 224px;
@@ -90,21 +94,21 @@
   --menu-height: 28px;
   --menu-surface: rgb(246 246 246 / .72);
   --menu-text: #1a1a1a;
-  --dock-radius: 8px;
+  --dock-radius: var(--radius-ui);
   --dock-bottom: 5px;
   --dock-icon-size: 36px;
   --dock-button-width: 45px;
   --dock-height: 62px;
-  --dock-surface: rgb(246 246 246 / .20);
-  --dock-blur: 36px;
+  --dock-surface: rgb(246 246 246 / .10);
+  --dock-blur: 30px;
   --shadow-dock: 0 0 0 .5px rgb(26 26 26 / .46), 0 3px 6px rgb(0 0 0 / .2), inset 0 1px 1px rgb(255 255 255 / .65);
   --tooltip-background: rgb(246 246 246 / .92);
-  --thumbnail-radius: 3px;
+  --thumbnail-radius: var(--radius-ui);
   --thumbnail-s: clamp(68px, 6vw, 84px);
   --thumbnail-m: clamp(84px, 7.5vw, 108px);
   --thumbnail-l: clamp(96px, 9vw, 128px);
   --label-color: #fff;
-  --shadow-thumbnail: 0 2px 3px rgb(0 0 0 / .28);
+  --shadow-thumbnail: 0 0 0 transparent;
   --wallpaper-placeholder: #ddd5cb;
   --wallpaper-gradient: radial-gradient(ellipse at 18% 14%, #e8e8e2, transparent 58%), linear-gradient(135deg, #d4dedf, #d6c9c2 58%, #c7cbd9);
   --wallpaper-position-desktop: 50% 42%;
@@ -125,24 +129,24 @@
   --material-medium: rgb(246 246 246 / .60);
   --material-thick: rgb(246 246 246 / .72);
   --material-ultrathick: rgb(246 246 246 / .84);
-  --material-panel: rgb(245 245 245 / .40);
+  --material-panel: rgba(255, 253, 253, 0.5);
   --material-fallback: #ededed;
   --material-rim: rgb(255 255 255 / .75);
   --material-saturation: 1.15;
-  --material-blur: 22px;
+  --material-blur: 15px;
   --sidebar-radius: 0px;
   --sidebar-inset: 0px;
   --menu-item-highlight: rgb(0 0 0 / .08);
   --menu-icon-filter: brightness(0);
   --menu-text-shadow: none;
-  --menu-radius: 13px;
-  --menu-row-radius: 5px;
+  --menu-radius: var(--radius-ui);
+  --menu-row-radius: var(--radius-ui);
   --notification-width: 382px;
-  --notification-radius: 8px;
+  --notification-radius: var(--radius-ui);
   --notification-shadow: 0 10px 40px rgb(0 0 0 / .2), inset 0 1px 0 rgb(255 255 255 / .35);
   --alert-width: 320px;
   --alert-action-height: 32px;
-  --alert-action-radius: 16px;
+  --alert-action-radius: var(--radius-ui);
   --row-stripe: #f7f7f7;
   --pane-content: #ffffff;
   --pane-sidebar: #ececec;

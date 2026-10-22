@@ -34,7 +34,7 @@ import ui23 from '../assets/ui/restore.svg?no-inline';
 import ui24 from '../assets/reference/brand.svg?no-inline';
 import ui25 from '../assets/reference/folder.png?no-inline';
 
-import desktopWallpaper from '../assets/wallpapers/desktop.webp?no-inline';
+import desktopWallpaper from '../assets/wallpapers/desktop1.png?no-inline';
 import mobileWallpaper from '../assets/wallpapers/mobile.webp?no-inline';
 import illustratorIcon from '../assets/dock/illustrator.svg?no-inline';
 import photoshopIcon from '../assets/dock/photoshop.svg?no-inline';

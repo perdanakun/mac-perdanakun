@@ -14,7 +14,7 @@
 .menu-bar__brand { width: 25px; flex: 0 0 25px; }
 .menu-bar__brand .ui-icon, .menu-status > .menu-indicator > .ui-icon, .menu-status-button > .ui-icon { filter: var(--menu-icon-filter); }
 .menu-app-name { margin: 0 8px 0 4px; font-size: 13px; font-weight: 600; }
-.menu-control { min-height: 25px; padding: 4px 10px; border-radius: 12.5px; font-size: 13px; line-height: 17px; }
+.menu-control { min-height: 25px; padding: 4px 10px; border-radius: var(--radius-ui); font-size: 13px; line-height: 17px; }
 .menu-control[aria-expanded="true"] { background: var(--menu-item-highlight); }
 .menu-status { gap: 1px; }
 .menu-indicator, .menu-status-button { width: 29px; height: 25px; }
@@ -33,7 +33,7 @@
 .menu-popover hr { margin: 5px 5px; border: 0; border-top: 1px solid var(--color-divider); }
 .appearance-panel { min-width: 268px; padding: 14px; }
 .appearance-options { gap: 6px; }
-.appearance-options button { border-radius: 12px; box-shadow: none; }
+.appearance-options button { border-radius: var(--radius-ui); box-shadow: none; }
 .appearance-options button[aria-pressed="true"] { background: var(--sidebar-selection); box-shadow: inset 0 0 0 1px var(--color-border); }
 
 /* Shared window composition: one background + one full-height left sidebar.
@@ -72,7 +72,7 @@
 }
 .window[data-sidebar-window="true"] .app-sidebar {
   grid-column: 1; grid-row: 1; position: relative; z-index: auto;
-  margin: 0; padding: 56px 12px 16px; border: 0; border-right: 1px solid var(--pane-divider);
+  margin: 0; padding: 56px 12px 16px; border: 0; border-right: .5px solid var(--pane-divider);
   border-radius: 0; background: var(--pane-sidebar); box-shadow: none;
   -webkit-backdrop-filter: none; backdrop-filter: none;
 }
@@ -87,7 +87,7 @@
 .finder-sidebar, .gallery-sidebar, .notes-sidebar { flex-shrink: 0; }
 .finder-main, .gallery-library, .notes-editor { background: var(--pane-content); }
 .sidebar-heading { margin: 12px 8px 7px; font-size: 11px; line-height: 14px; font-weight: 600; }
-.sidebar-item { min-height: 28px; padding: 5px 7px; gap: 6px; border-radius: 7px; font-size: 12px; line-height: 18px; }
+.sidebar-item { min-height: 28px; padding: 5px 7px; gap: 6px; border-radius: var(--radius-ui); font-size: 12px; line-height: 18px; }
 .sidebar-item .ui-icon { width: 16px; height: 16px; filter: var(--ui-icon-filter); }
 .sidebar-item[aria-pressed="true"] { background: var(--sidebar-selection); font-weight: 500; }
 .sidebar-item[aria-pressed="true"] .ui-icon { filter: invert(43%) sepia(95%) saturate(3100%) hue-rotate(185deg) brightness(103%); }
@@ -119,18 +119,18 @@
 .button--primary:not(:disabled):active { background: #0d6fff; filter: none; }
 .button--secondary:not(:disabled):active { background: var(--color-secondary-hover); filter: none; }
 .button:disabled, .files-actions button:disabled, .trash-row > button:disabled { opacity: .35; }
-.icon-button { width: 36px; height: 36px; flex-basis: 36px; border-radius: 18px; }
-.control-group { padding: 2px; gap: 0; min-height: 36px; border-radius: 18px; }
+.icon-button { width: 36px; height: 36px; flex-basis: 36px; border-radius: var(--radius-ui); }
+.control-group { padding: 2px; gap: 0; min-height: 36px; border-radius: var(--radius-ui); }
 .control-group .icon-button { width: 30px; height: 30px; flex-basis: 30px; }
 .button--glass, .icon-button, .control-group, .search-field { background: var(--control-glass); box-shadow: var(--control-shadow); }
 .control-group .icon-button { background: transparent; box-shadow: none; }
-.search-field { width: 136px; height: 36px; border-radius: 18px; }
+.search-field { width: 136px; height: 36px; border-radius: var(--radius-ui); }
 .finder-toolbar .search-field { flex-shrink: 1; }
 .search-field input { font-size: 12px; }
 .segmented-control .icon-button[aria-pressed="true"] { background: var(--sidebar-selection); }
 .finder-entries--list { padding: 0 8px 12px; }
 .finder-list-heading { margin: 0 8px; padding-top: 5px; padding-bottom: 6px; font-size: 11px; }
-.finder-entries--list .finder-entry { min-height: 22px; padding: 1px 6px; gap: 7px; border-radius: 6px; grid-template-columns: 20px minmax(0,1fr) minmax(90px,.5fr) 48px; }
+.finder-entries--list .finder-entry { min-height: 22px; padding: 1px 6px; gap: 7px; border-radius: var(--radius-ui); grid-template-columns: 20px minmax(0,1fr) minmax(90px,.5fr) 48px; }
 .finder-entries--list .finder-entry:nth-child(even) { background: var(--row-stripe); }
 .finder-entries--list .finder-entry-art, .finder-entries--list .finder-entry-art img { width: 16px; height: 16px; }
 .finder-entries--list .finder-entry-name { font-size: 12px; line-height: 18px; }
@@ -145,17 +145,17 @@
 .notes-list-heading { min-height: 32px; padding: 5px 9px; }
 .notes-search { padding: 0 4px 14px; }
 .notes-search .search-field { width: 100%; height: 32px; background: var(--sidebar-selection); box-shadow: none; }
-.notes-tabs button { min-height: 62px; padding: 11px 12px; border-radius: 7px; }
+.notes-tabs button { min-height: 62px; padding: 11px 12px; border-radius: var(--radius-ui); }
 .note-row-title { font-size: 13px; line-height: 18px; font-weight: 600; }
 .note-row-preview { display: block; margin-top: 2px; font-size: 12px; line-height: 17px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.notes-toolbar .button { border-radius: 16px; }
+.notes-toolbar .button { border-radius: var(--radius-ui); }
 .notes-toolbar { justify-content: flex-end; min-height: 56px; padding: 8px 24px; background: var(--pane-content); }
 .note-content { padding: 8px 28px 32px; }
 .note-content h2 { margin: 0 0 24px; font-size: 24px; line-height: 30px; }
 .note-content > p { margin: 0 0 18px; }
 .note-content a { color: var(--note-link); text-decoration: underline; text-underline-offset: 2px; }
 .note-content a:hover { text-decoration-thickness: 2px; }
-.note-content a:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 3px; border-radius: 2px; }
+.note-content a:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 3px; border-radius: var(--radius-ui); }
 .note-items { margin: 0; padding: 0; }
 .note-items li { margin: 0 0 22px; }
 .note-items h3 { margin: 0 0 4px; font-size: 14px; line-height: 20px; }
@@ -166,12 +166,12 @@
 .gallery-heading h2 { margin: 0; font-size: 17px; line-height: 22px; }
 .gallery-heading .gallery-count { display: block; margin-top: 2px; font-size: 12px; line-height: 16px; }
 .gallery-grid { grid-template-columns: repeat(auto-fill,minmax(120px,1fr)); align-content: start; gap: 8px; padding: 8px 16px 16px; }
-.gallery-tile { border-radius: 4px; }
+.gallery-tile { border-radius: var(--radius-ui); }
 .mail-toolbar { background: var(--surface-subtle); }
-.mail-toolbar .button, .contact-links a { border-radius: 16px; }
+.mail-toolbar .button, .contact-links a { border-radius: var(--radius-ui); }
 .project-info { background: var(--color-surface); }
 .trash-confirm { border-radius: var(--dialog-radius); padding: 18px; }
-.trash-confirm button { min-height: 32px; border-radius: 16px; }
+.trash-confirm button { min-height: 32px; border-radius: var(--radius-ui); }
 
 /* Alert.svg (r26, 32px pill actions) and notification.svg (382x72/r16).
    Alert width/height grow for the existing longer portfolio copy. */
@@ -186,14 +186,14 @@
 .notification-center { top: calc(var(--menu-height) + var(--safe-top) + 14px); right: max(20px,var(--safe-right)); width: min(var(--notification-width),calc(100vw - 32px)); gap: 16px; }
 .notification { min-height: 72px; border: 0; border-radius: var(--notification-radius); background: var(--material-fallback); box-shadow: var(--notification-shadow); }
 .notification-body { align-items: flex-start; min-height: 72px; padding: 12px 13px; gap: 12px; }
-.notification-body > img { width: 32px; height: 32px; flex: 0 0 32px; border-radius: 7px; }
+.notification-body > img { width: 32px; height: 32px; flex: 0 0 32px; border-radius: var(--radius-ui); }
 .notification-copy { padding-right: 16px; }
 .notification-copy strong { margin: 0; font-size: 13px; line-height: 17px; font-weight: 600; }
 .notification-copy > span { font-size: 13px; line-height: 16px; }
 .notification-time { top: 12px; right: 12px; font-size: 10px; line-height: 14px; color: var(--color-tertiary); }
-.spotlight { border-radius: 26px; background: var(--material-fallback); }
+.spotlight { border-radius: var(--radius-ui); background: var(--material-fallback); }
 .spotlight-field { min-height: 64px; }
-.spotlight-result { border-radius: 8px; }
+.spotlight-result { border-radius: var(--radius-ui); }
 .spotlight-result[aria-selected="true"] { background: var(--color-accent); }
 
 /* Desktop specimens: Dock r15, 62px height, 36px artwork on 45px slots. */
@@ -205,7 +205,19 @@
 .dock-item[data-divider="true"]::before { top: 2px; height: 41px; background: var(--color-border); box-shadow: none; }
 .dock-icon-scale img { filter: drop-shadow(0 1px 1px rgb(0 0 0 / .12)); }
 .dock-dot { width: 3px; height: 3px; bottom: 5px; }
-.dock-label { border-radius: 7px; }
+.dock-label { border-radius: var(--radius-ui); }
+
+/* Thin rim treatment from the user's latest customization. */
+.menu-popover, .spotlight {
+  border-width: .5px; border-color: rgb(255 255 255 / .12);
+  box-shadow: 0 12px 32px rgb(0 0 0 / .18), inset 0 .5px 0 rgb(255 255 255 / .18);
+}
+.dock {
+  box-shadow: 0 0 0 .5px rgb(255 255 255 / .12), 0 3px 10px rgb(0 0 0 / .16), inset 0 .5px 0 rgb(255 255 255 / .18);
+}
+.notification {
+  box-shadow: 0 8px 24px rgb(0 0 0 / .16), inset 0 .5px 0 rgb(255 255 255 / .15);
+}
 
 /* Floating system surfaces keep the supplied glass material. Window panes
    deliberately use solid backgrounds to avoid compositing overlap. */
@@ -227,7 +239,7 @@
   .menu-status-button { width: 44px; height: 44px; }
   .menu-bar__identity .menu-app-name { padding: 0; margin: 0 4px; }
   .menu-status time { font-size: 12px; }
-  .sheet { border-radius: 26px 26px 0 0; background: var(--color-surface); box-shadow: var(--shadow-window-active); }
+  .sheet { border-radius: var(--radius-ui) var(--radius-ui) 0 0; background: var(--color-surface); box-shadow: var(--shadow-window-active); }
   .sheet__header { min-height: 64px; background: var(--pane-sidebar); border-bottom: 1px solid var(--color-divider); }
   .sheet .app-sidebar { margin: 0; border-radius: 0; background: var(--pane-sidebar); -webkit-backdrop-filter: none; backdrop-filter: none; }
   .sheet .finder-sidebar, .sheet .gallery-sidebar { padding: 6px 10px; max-height: 62px; }
@@ -251,7 +263,7 @@
   .note-content { padding: 24px 20px; }
   .gallery-grid { grid-template-columns: repeat(auto-fill,minmax(110px,1fr)); padding: 8px 12px 16px; }
   .alert-dialog { width: min(340px,calc(100vw - 32px)); }
-  .dialog-actions .button { min-height: 44px; border-radius: 22px; }
+  .dialog-actions .button { min-height: 44px; border-radius: var(--radius-ui); }
   .notification-center { top: calc(var(--menu-height) + var(--safe-top) + 10px); right: max(12px,var(--safe-right)); width: min(382px,calc(100vw - 24px)); gap: 12px; }
   .notification-copy { padding-right: 24px; }
   .notification-close { top: 2px; right: 2px; left: auto; width: 44px; height: 44px; }
@@ -260,13 +272,13 @@
   .dock-item[data-divider="true"] { margin: 0; padding: 0; }
   .dock-button { min-width: 44px; }
   .dock-dot { bottom: 4px; }
-  .spotlight { border-radius: 26px; }
+  .spotlight { border-radius: var(--radius-ui); }
   .spotlight-result { min-height: 52px; }
   .sheet__header { -webkit-backdrop-filter: none; backdrop-filter: none; }
 }
 @media (prefers-reduced-transparency: reduce) {
-  .window[data-sidebar-window="true"], .window__titlebar, .app-sidebar, .menu-bar,
-  .sheet__header, .alert-dialog,
+  .window[data-sidebar-window="true"], .window__titlebar, .app-sidebar,
+  .alert-dialog, .sheet__header,
   .icon-button, .control-group, .search-field, .button--glass {
     -webkit-backdrop-filter: none !important; backdrop-filter: none !important;
     background: var(--material-fallback) !important;
@@ -285,28 +297,13 @@
   .menu-bar__brand .ui-icon, .menu-status > .menu-indicator > .ui-icon, .menu-status-button > .ui-icon { filter: none; }
 }
 
-/* Dropdown, Appearance, dan Search */
-.menu-popover,
-.spotlight {
-  border-width: 0.5px;
-  border-color: rgb(255 255 255 / .12);
-
-  box-shadow:
-    0 12px 32px rgb(0 0 0 / .18),
-    inset 0 .5px 0 rgb(255 255 255 / .18);
+.menu-bar {
+  background: transparent;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
 }
 
-/* Dock */
-.dock {
-  box-shadow:
-    0 0 0 .5px rgb(255 255 255 / .12),
-    0 3px 10px rgb(0 0 0 / .16),
-    inset 0 .5px 0 rgb(255 255 255 / .18);
-}
-
-/* Notification */
-.notification {
-  box-shadow:
-    0 8px 24px rgb(0 0 0 / .16),
-    inset 0 .5px 0 rgb(255 255 255 / .15);
+.thumbnail__label {
+  color: var(--label-color);
+  text-shadow: 0 1px 3px rgb(0 0 0 / .90);
 }
