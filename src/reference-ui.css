@@ -22,7 +22,7 @@
 .menu-popover {
   min-width: 240px; padding: 6px; border: .5px solid var(--material-border);
   border-radius: var(--menu-radius); background: var(--material-fallback);
-  box-shadow: var(--shadow-dialog); overflow: hidden;
+  box-shadow: var(--shadow-popover); overflow: hidden; max-height: calc(100dvh - var(--menu-height) - var(--safe-top) - 24px); overflow-y: auto;
 }
 .menu-popover > button { min-height: 25px; padding: 4px 8px; border-radius: var(--menu-row-radius); gap: 8px; }
 .menu-popover > button:not(:disabled):hover, .menu-popover > button:not(:disabled):focus-visible {
@@ -31,10 +31,6 @@
 .menu-popover > button:not(:disabled):is(:hover,:focus-visible) .ui-icon { filter: brightness(0) invert(1); }
 .menu-popover > button:not(:disabled):is(:hover,:focus-visible) kbd { color: rgb(255 255 255 / .8); }
 .menu-popover hr { margin: 5px 5px; border: 0; border-top: 1px solid var(--color-divider); }
-.appearance-panel { min-width: 268px; padding: 14px; }
-.appearance-options { gap: 6px; }
-.appearance-options button { border-radius: var(--radius-ui); box-shadow: none; }
-.appearance-options button[aria-pressed="true"] { background: var(--sidebar-selection); box-shadow: inset 0 0 0 1px var(--color-border); }
 
 /* Shared window composition: one background + one full-height left sidebar.
    The outer window alone clips its children. No inset frame, pseudo-surface,
@@ -210,19 +206,20 @@
 /* Thin rim treatment from the user's latest customization. */
 .menu-popover, .spotlight {
   border-width: .5px; border-color: rgb(255 255 255 / .12);
-  box-shadow: 0 12px 32px rgb(0 0 0 / .18), inset 0 .5px 0 rgb(255 255 255 / .18);
+  box-shadow: var(--shadow-popover);
 }
 .dock {
-  box-shadow: 0 0 0 .5px rgb(255 255 255 / .12), 0 3px 10px rgb(0 0 0 / .16), inset 0 .5px 0 rgb(255 255 255 / .18);
+  box-shadow: var(--shadow-dock);
 }
 .notification {
-  box-shadow: 0 8px 24px rgb(0 0 0 / .16), inset 0 .5px 0 rgb(255 255 255 / .15);
+  box-shadow: var(--notification-shadow);
 }
 
 /* Floating system surfaces keep the supplied glass material. Window panes
    deliberately use solid backgrounds to avoid compositing overlap. */
 @supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
   .menu-popover, .alert-dialog, .notification, .spotlight { background: var(--material-panel); -webkit-backdrop-filter: blur(var(--material-blur)) saturate(var(--material-saturation)); backdrop-filter: blur(var(--material-blur)) saturate(var(--material-saturation)); }
+  .menu-popover { background: var(--menu-popover-surface); }
   .dock { background: var(--dock-surface); -webkit-backdrop-filter: blur(var(--dock-blur)) saturate(1.25); backdrop-filter: blur(var(--dock-blur)) saturate(1.25); }
 }
 @media (max-width: 1050px) and (min-width: 769px) {
@@ -305,5 +302,6 @@
 
 .thumbnail__label {
   color: var(--label-color);
-  text-shadow: 0 1px 3px rgb(0 0 0 / .90);
+  text-shadow: var(--shadow-label);
 }
+

@@ -34,7 +34,7 @@ import ui23 from '../assets/ui/restore.svg?no-inline';
 import ui24 from '../assets/reference/brand.svg?no-inline';
 import ui25 from '../assets/reference/folder.png?no-inline';
 
-import desktopWallpaper from '../assets/wallpapers/desktop1.png?no-inline';
+import desktopWallpaper from '../assets/wallpapers/desktop1.webp?no-inline';
 import mobileWallpaper from '../assets/wallpapers/mobile.webp?no-inline';
 import illustratorIcon from '../assets/dock/illustrator.svg?no-inline';
 import photoshopIcon from '../assets/dock/photoshop.svg?no-inline';
@@ -71,11 +71,6 @@ export const profile = {
   role: 'Graphic & Visual Designer',
   location: 'Salatiga, Indonesia',
   menuLabel: 'Portfolio',
-  appearance: {
-    dayStart: 6, nightStart: 18,
-    title: 'Appearance', description: 'Auto follows your local time: light from 6 AM to 6 PM.',
-    options: [ { id: 'auto', label: 'Auto', icon: 'auto' }, { id: 'light', label: 'Light', icon: 'sun' }, { id: 'dark', label: 'Dark', icon: 'moon' } ],
-  },
   spotlight: {
     title: 'Search portfolio', placeholder: 'Search projects and apps', empty: 'No matching projects or apps.',
     resultsLabel: 'Search results', application: 'Application', hint: '↑ ↓ to browse · Enter to open · Esc to close',
@@ -90,12 +85,12 @@ export const profile = {
   menuBar: {
     menusLabel: 'Portfolio menu', defaultApp: 'Finder',
     wifiLabel: 'Wi-Fi icon (visual indicator)', batteryLabel: 'Battery icon (visual indicator)',
-    searchLabel: 'Search portfolio', controlsLabel: 'Appearance controls',
+    searchLabel: 'Search portfolio',
     windowsLabel: 'Open windows', noWindows: 'No open windows',
     menus: [
       { id: 'file', label: 'File', items: [ { label: 'Open Finder', action: 'finder' }, { label: 'View Gallery', action: 'gallery' }, { label: 'Contact Perdana', action: 'mail' } ] },
       { id: 'edit', label: 'Edit', secondary: true, items: [ { label: 'Find…', action: 'search', shortcut: '⌘ / Ctrl K' } ] },
-      { id: 'view', label: 'View', items: [ { label: 'Appearance…', action: 'appearance' }, { label: 'Hide Desktop Icons', showLabel: 'Show Desktop Icons', action: 'toggle-desktop-icons' }, { label: 'Show Desktop', action: 'desktop' } ] },
+      { id: 'view', label: 'View', items: [ { label: 'Hide Desktop Icons', showLabel: 'Show Desktop Icons', action: 'toggle-desktop-icons' }, { label: 'Show Desktop', action: 'desktop' } ] },
       { id: 'window', label: 'Window', items: [ { label: 'Minimize', action: 'minimize' }, { label: 'Zoom', action: 'zoom' }, { label: 'Close Window', action: 'close' } ] },
       { id: 'help', label: 'Help', secondary: true, items: [ { label: 'About Perdana', action: 'about' }, { label: 'Get in touch', action: 'mail' }, { label: 'Show welcome', action: 'welcome' } ] },
     ],

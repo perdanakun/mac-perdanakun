@@ -84,7 +84,7 @@ input:not([type="search"]):focus-visible, textarea:focus-visible, select:focus-v
 .thumbnail__preview .image-frame img { object-fit: contain; border-radius: var(--thumbnail-radius); filter: drop-shadow(var(--shadow-thumbnail)); }
 .thumbnail__label { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; height: 38px; margin: 6px auto 0; padding: 2px 0;
   background: none; color: var(--label-color); font-size: 12px; font-weight: var(--weight-medium); line-height: 16px; text-align: center; overflow-wrap: anywhere;
-  text-shadow: 0 1px 2px rgb(0 0 0 / .95), 0 2px 5px rgb(0 0 0 / .8); }
+  text-shadow: var(--shadow-label); }
 .image-frame { position: relative; width: 100%; overflow: hidden; background: var(--color-image-placeholder); }
 .image-frame img { display: block; width: 100%; height: 100%; object-fit: contain; opacity: 0; transition: opacity var(--duration-image) ease-out; }
 .image-frame[data-loaded="true"] img { opacity: 1; }
@@ -295,7 +295,7 @@ input:not([type="search"]):focus-visible, textarea:focus-visible, select:focus-v
 .dock-icon-art { display: block; width: 100%; height: 100%; transform: scale(var(--dock-art-scale,1)); transform-origin: center; pointer-events: none; }
 .dock-icon-scale img { display: block; width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 2px 2px rgb(0 0 0 / .18)); }
 .dock-dot { position: absolute; bottom: 4px; width: 4px; height: 4px; border-radius: var(--radius-ui); background: var(--dock-dot); opacity: 0; }.dock-dot[data-open="true"] { opacity: 1; }
-.dock-label { position: absolute; bottom: calc(var(--dock-icon-size) * 1.45 + 14px); left: 50%; padding: 5px 10px; border: .5px solid rgb(0 0 0 / .2); border-radius: var(--radius-ui); background: var(--tooltip-background); box-shadow: 0 4px 10px rgb(0 0 0 / .12), inset 0 1px rgb(255 255 255 / .9); color: var(--color-text); font-size: 12px; line-height: 16px; white-space: nowrap; opacity: 0; pointer-events: none; transform: translate(-50%,3px); transition: opacity var(--duration-fast), transform var(--duration-fast); }
+.dock-label { position: absolute; bottom: calc(var(--dock-icon-size) * 1.45 + 14px); left: 50%; padding: 5px 10px; border: .5px solid rgb(0 0 0 / .2); border-radius: var(--radius-ui); background: var(--tooltip-background); box-shadow: var(--shadow-tooltip); color: var(--color-text); font-size: 12px; line-height: 16px; white-space: nowrap; opacity: 0; pointer-events: none; transform: translate(-50%,3px); transition: opacity var(--duration-fast), transform var(--duration-fast); }
 .dock-button:focus-visible .dock-label { opacity: 1; transform: translate(-50%,0); }
 
 /* Alerts use a separate, more rounded glass material than app windows. */
@@ -421,14 +421,14 @@ input:not([type="search"]):focus-visible, textarea:focus-visible, select:focus-v
 .menu-control { min-height: 24px; padding: 4px 9px; border: 0; border-radius: var(--radius-ui); background: transparent; color: inherit; font-size: 13px; line-height: 16px; text-shadow: inherit; }
 .menu-control[aria-expanded="true"] { background: rgb(255 255 255 / .2); }
 .desktop-menus, .menu-status { display: flex; align-items: center; }
-.desktop-menu, .appearance-anchor { position: relative; }
+.desktop-menu { position: relative; }
 .menu-status { flex: 0 0 auto; gap: 2px; }
 .menu-indicator { display: grid; place-items: center; width: 32px; height: 24px; }
 .menu-status-button { display: grid; place-items: center; width: 32px; padding: 4px; }
 .menu-status > .menu-indicator > .ui-icon, .menu-status-button > .ui-icon { filter: brightness(0) invert(1); }
 .menu-status time { margin-left: 7px; font-size: 13px; }
-.menu-popover { position: absolute; z-index: 2; top: calc(100% + 5px); left: 0; min-width: 220px; max-width: calc(100vw - 24px); padding: 5px; border: .5px solid var(--material-border); border-radius: var(--radius-ui);
-  background: var(--glass-fallback); color: var(--color-text); box-shadow: 0 10px 30px rgb(0 0 0 / .22), inset 0 1px var(--material-highlight); text-shadow: none; }
+.menu-popover { position: fixed; z-index: 2; min-width: 220px; max-width: calc(100vw - 24px); padding: 5px; border: .5px solid var(--material-border); border-radius: var(--radius-ui);
+  background: var(--glass-fallback); color: var(--color-text); box-shadow: var(--shadow-popover); text-shadow: none; }
 .menu-popover > button { display: flex; align-items: center; gap: 8px; width: 100%; min-height: 26px; padding: 5px 8px; border: 0; border-radius: var(--radius-ui); background: transparent; color: inherit; font-size: 13px; line-height: 16px; text-align: left; }
 .menu-popover > button > span { flex: 1; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .menu-popover > button:not(:disabled):is(:hover,:focus-visible) { outline: none; background: var(--color-selected); color: #fff; }
@@ -437,23 +437,16 @@ input:not([type="search"]):focus-visible, textarea:focus-visible, select:focus-v
 .menu-popover > button:not(:disabled):is(:hover,:focus-visible) kbd { color: rgb(255 255 255 / .8); }
 .menu-popover hr { margin: 4px 6px; border: 0; border-top: 1px solid var(--color-divider); }
 .menu-empty { margin: 0; padding: 8px; color: var(--color-muted); font-size: 12px; }
-.appearance-panel { right: 0; left: auto; width: 270px; padding: 16px; border-radius: var(--radius-ui); }
-.appearance-panel h2 { margin-bottom: 14px; font-size: 13px; line-height: 18px; }
-.appearance-options { display: flex; gap: 8px; }
-.appearance-options button { display: flex; flex: 1; flex-direction: column; align-items: center; gap: 7px; min-height: 70px; padding: 10px 6px; border: .5px solid var(--color-border); border-radius: var(--radius-ui); background: var(--control-glass); color: var(--color-text); font-size: 11px; }
-.appearance-options button[aria-pressed="true"] { border-color: var(--color-accent); box-shadow: 0 0 0 1px var(--color-accent); }
-.appearance-panel p { margin: 14px 0 0; color: var(--color-muted); font-size: 11px; line-height: 16px; }
 
 /* Compact Dock, close to the 36px art / 55px bar in the supplied desktop. */
 .dock::before { background: linear-gradient(160deg,rgb(255 255 255 / .12),transparent 40%,rgb(255 255 255 / .025)); }
 .dock::after { content: ''; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 2px 2px -2px var(--material-highlight),inset 0 -2px 2px -2px var(--material-highlight); pointer-events: none; }
 .dock-item[data-divider="true"]::before { background: var(--color-tertiary); }
-:root[data-theme="dark"] .dock::before { opacity: .5; }
 
 /* Two local welcome banners, no browser push permission or remote service. */
 .notification-center { position: fixed; z-index: 800; top: calc(var(--menu-height) + var(--safe-top) + 15px); right: max(16px,var(--safe-right)); display: flex; flex-direction: column; gap: 16px; width: min(344px,calc(100vw - 32px - var(--safe-left) - var(--safe-right))); }
 .notification-center[data-hidden="true"] { visibility: hidden; pointer-events: none; }
-.notification { position: relative; isolation: isolate; border: .5px solid var(--material-border); border-radius: var(--radius-ui); background: var(--glass-fallback); color: var(--color-text); box-shadow: 0 8px 24px rgb(0 0 0 / .12),inset 0 1px var(--material-highlight); }
+.notification { position: relative; isolation: isolate; border: .5px solid var(--material-border); border-radius: var(--radius-ui); background: var(--glass-fallback); color: var(--color-text); box-shadow: var(--notification-shadow); }
 .notification-body { display: flex; align-items: flex-start; gap: 12px; width: 100%; min-height: 56px; padding: 12px 14px; border: 0; border-radius: inherit; background: transparent; color: inherit; text-align: left; }
 .notification-body > img { flex: 0 0 32px; width: 32px; height: 32px; object-fit: contain; border-radius: var(--radius-ui); }
 .notification-copy { flex: 1; min-width: 0; padding-right: 14px; }
@@ -489,7 +482,6 @@ input:not([type="search"]):focus-visible, textarea:focus-visible, select:focus-v
 @media (max-width: 768px) {
   .desktop-menus { display: none; }.menu-bar__identity strong { max-width: 120px; padding-left: 6px; padding-right: 4px; font-size: 13px; }
   .menu-bar__brand { min-height: 44px; flex-basis: 44px; }.menu-status { gap: 1px; }.menu-status-button { width: 44px; height: 44px; }.menu-indicator { width: 26px; }.menu-status time { margin-left: 5px; font-size: 12px; }
-  .appearance-panel { position: fixed; top: calc(var(--menu-height) + var(--safe-top) + 6px); right: max(12px,var(--safe-right)); }.appearance-panel .appearance-options button { min-height: 76px; }
   .notification-center { top: calc(var(--menu-height) + var(--safe-top) + 10px); right: max(12px,var(--safe-right)); width: min(344px,calc(100vw - 24px - var(--safe-left) - var(--safe-right))); gap: 12px; }
   .notification-close { top: 3px; left: auto; right: 3px; width: 44px; height: 44px; opacity: 1; border: 0; background: transparent; box-shadow: none; }
   .notification-time { display: none; }.notification-copy { padding-right: 20px; }.notification-body { min-height: 68px; }

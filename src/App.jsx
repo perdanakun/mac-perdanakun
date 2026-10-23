@@ -21,12 +21,10 @@ import TrashApp from './components/TrashApp.jsx';
 import FileInfo from './components/FileInfo.jsx';
 import Notifications from './components/Notifications.jsx';
 import Spotlight from './components/Spotlight.jsx';
-import { useAppearance } from './hooks/useAppearance.js';
 
 export default function App() {
   const mobile = useMobile();
   const manager = useWindows();
-  const appearance = useAppearance(profile.appearance);
   const files = useProjectFiles(projects);
   const [skill, setSkill] = useState(null);
   const [spotlight, setSpotlight] = useState(null);
@@ -117,7 +115,7 @@ export default function App() {
       <div className="portfolio">
         <Wallpaper wallpaper={profile.wallpaper} />
         <div className="desktop-shell" inert={Boolean(overlay || (mobile && active))}>
-          <MenuBar profile={profile} appearance={appearance} active={active} windows={manager.windows} mobile={mobile}
+          <MenuBar profile={profile} active={active} windows={manager.windows} mobile={mobile}
             desktopIconsVisible={desktopIconsVisible} onAction={menuAction} />
           <Desktop projects={files.available} mobile={mobile} windows={manager.windows} onOpen={openProject}
             iconsVisible={mobile || desktopIconsVisible} />
