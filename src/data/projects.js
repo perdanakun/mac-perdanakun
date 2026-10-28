@@ -12,30 +12,37 @@ import scp6 from '../assets/projects/scp/scp6.webp?no-inline';
 import scp7 from '../assets/projects/scp/scp7.webp?no-inline';
 import scp8 from '../assets/projects/scp/scp8.webp?no-inline';
 
-import studioIdentityThumbnail from '../assets/projects/studio-identity/thumbnail.svg?no-inline';
-import studioIdentityVisual01 from '../assets/projects/studio-identity/visual-01.svg?no-inline';
-import studioIdentityVisual02 from '../assets/projects/studio-identity/visual-02.svg?no-inline';
-
-import coffeeIdentityThumbnail from '../assets/projects/coffee-identity/thumbnail.svg?no-inline';
-import coffeeIdentityVisual01 from '../assets/projects/coffee-identity/visual-01.svg?no-inline';
-import coffeeIdentityVisual02 from '../assets/projects/coffee-identity/visual-02.svg?no-inline';
-
-import characterStudiesThumbnail from '../assets/projects/character-studies/beyou3.webp?no-inline';
-import characterStudiesVisual01 from '../assets/projects/character-studies/beyou1.webp?no-inline';
-import characterStudiesVisual02 from '../assets/projects/character-studies/beyou2.webp?no-inline';
-
 import mandiri1 from '../assets/projects/bank-mandiri/mandiri1.webp?no-inline';
 import mandiri2 from '../assets/projects/bank-mandiri/mandiri2.webp?no-inline';
 import mandiri3 from '../assets/projects/bank-mandiri/mandiri3.webp?no-inline';
 
-import campaignVisualsThumbnail from '../assets/projects/campaign-visuals/thumbnail.svg?no-inline';
-import campaignVisualsVisual01 from '../assets/projects/campaign-visuals/visual-01.svg?no-inline';
-import campaignVisualsVisual02 from '../assets/projects/campaign-visuals/visual-02.svg?no-inline';
+import batavia1 from '../assets/projects/batavia/batavia-01.webp?no-inline';
+import batavia2 from '../assets/projects/batavia/batavia-02.webp?no-inline';
+import batavia3 from '../assets/projects/batavia/batavia-03.webp?no-inline';
+import batavia4 from '../assets/projects/batavia/batavia-04.webp?no-inline';
+import mariebiscuit1 from '../assets/projects/marie-biscuit/marie-biscuit-01.webp?no-inline';
+import mariebiscuit2 from '../assets/projects/marie-biscuit/marie-biscuit-02.webp?no-inline';
+import mariebiscuit3 from '../assets/projects/marie-biscuit/marie-biscuit-03.webp?no-inline';
+import mariebiscuit4 from '../assets/projects/marie-biscuit/marie-biscuit-04.webp?no-inline';
+import mariebiscuit5 from '../assets/projects/marie-biscuit/marie-biscuit-05.webp?no-inline';
+import mariebiscuit6 from '../assets/projects/marie-biscuit/marie-biscuit-06.webp?no-inline';
+import mariebiscuit7 from '../assets/projects/marie-biscuit/marie-biscuit-07.webp?no-inline';
+import mariebiscuit8 from '../assets/projects/marie-biscuit/marie-biscuit-08.webp?no-inline';
+import beyou1 from '../assets/projects/be-you/be-you-01.webp?no-inline';
+import beyou2 from '../assets/projects/be-you/be-you-02.webp?no-inline';
+import beyou3 from '../assets/projects/be-you/be-you-03.webp?no-inline';
+import covid191 from '../assets/projects/covid-19/covid-19-01.webp?no-inline';
+import covid192 from '../assets/projects/covid-19/covid-19-02.webp?no-inline';
+import covid193 from '../assets/projects/covid-19/covid-19-03.webp?no-inline';
+import visualdesign1 from '../assets/projects/visual-design/visual-design-01.webp?no-inline';
+import visualdesign2 from '../assets/projects/visual-design/visual-design-02.webp?no-inline';
+import visualdesign3 from '../assets/projects/visual-design/visual-design-03.webp?no-inline';
+import visualdesign4 from '../assets/projects/visual-design/visual-design-04.webp?no-inline';
+import visualdesign5 from '../assets/projects/visual-design/visual-design-05.webp?no-inline';
+import visualdesign6 from '../assets/projects/visual-design/visual-design-06.webp?no-inline';
+import visualdesign7 from '../assets/projects/visual-design/visual-design-07.webp?no-inline';
 
-import launchAdsThumbnail from '../assets/projects/launch-ads/thumbnail.svg?no-inline';
-import launchAdsVisual01 from '../assets/projects/launch-ads/visual-01.svg?no-inline';
-import launchAdsVisual02 from '../assets/projects/launch-ads/visual-02.svg?no-inline';
-
+// Existing IDs keep desktop positions and session references stable.
 const starterProjects = [
   {
     id: 'mayora',
@@ -83,16 +90,19 @@ const starterProjects = [
   },
   {
     id: 'studio-identity',
-    title: 'Studio Identity',
-    category: 'Branding',
-    year: '2026',
-    client: 'Placeholder project',
-    tools: ['Adobe Illustrator', 'Adobe Photoshop'],
-    description: 'Placeholder for a brand identity. Summarize the business, the visual direction, and your role in one or two sentences.',
-    thumbnail: studioIdentityThumbnail,
+    title: 'Batavia',
+    category: 'Editorial Design, Graphic Design',
+    categories: ['Editorial Design', 'Graphic Design'],
+    year: '',
+    client: '',
+    tools: [],
+    description: 'Editorial layouts and photographic spreads for the Batavia book.',
+    thumbnail: batavia1,
     images: [
-      { src: studioIdentityVisual01, alt: 'Placeholder for a brand identity overview', width: 1600, height: 1200 },
-      { src: studioIdentityVisual02, alt: 'Placeholder for brand identity applications', width: 1600, height: 1000 },
+      { src: batavia1, alt: 'Batavia — slide 1', width: 1920, height: 1080 },
+      { src: batavia2, alt: 'Batavia — slide 2', width: 1920, height: 1080 },
+      { src: batavia3, alt: 'Batavia — slide 3', width: 1920, height: 1080 },
+      { src: batavia4, alt: 'Batavia — slide 4', width: 1920, height: 1080 },
     ],
     position: { x: 12, y: 58 },
     rotate: 0,
@@ -100,16 +110,23 @@ const starterProjects = [
   },
   {
     id: 'coffee-identity',
-    title: 'Coffee Identity',
-    category: 'Branding',
-    year: '2026',
-    client: 'Placeholder project',
-    tools: ['Adobe Illustrator', 'Adobe Photoshop'],
-    description: 'Placeholder for a coffee brand identity. Replace with the concept and the visual assets you designed.',
-    thumbnail: coffeeIdentityThumbnail,
+    title: 'Marie Biscuit',
+    category: 'Character Design, Branding, Packaging Design',
+    categories: ['Character Design', 'Branding', 'Packaging Design'],
+    year: '',
+    client: '',
+    tools: [],
+    description: 'Character designs and their applications across packaging, merchandise, and campaign visuals.',
+    thumbnail: mariebiscuit1,
     images: [
-      { src: coffeeIdentityVisual01, alt: 'Placeholder for a coffee brand identity', width: 1600, height: 1200 },
-      { src: coffeeIdentityVisual02, alt: 'Placeholder for typography, color, and brand details', width: 1600, height: 1000 },
+      { src: mariebiscuit1, alt: 'Marie Biscuit — slide 1', width: 1920, height: 1080 },
+      { src: mariebiscuit2, alt: 'Marie Biscuit — slide 2', width: 1920, height: 1080 },
+      { src: mariebiscuit3, alt: 'Marie Biscuit — slide 3', width: 1920, height: 1080 },
+      { src: mariebiscuit4, alt: 'Marie Biscuit — slide 4', width: 1920, height: 1080 },
+      { src: mariebiscuit5, alt: 'Marie Biscuit — slide 5', width: 1920, height: 1080 },
+      { src: mariebiscuit6, alt: 'Marie Biscuit — slide 6', width: 1920, height: 1080 },
+      { src: mariebiscuit7, alt: 'Marie Biscuit — slide 7', width: 1920, height: 1080 },
+      { src: mariebiscuit8, alt: 'Marie Biscuit — slide 8', width: 1920, height: 1080 },
     ],
     position: { x: 12, y: 78 },
     rotate: 0,
@@ -117,16 +134,18 @@ const starterProjects = [
   },
   {
     id: 'character-studies',
-    title: 'Character Studies',
-    category: 'Illustration',
-    year: '2026',
-    client: 'Placeholder project',
-    tools: ['Adobe Illustrator'],
-    description: 'Placeholder for a character illustration collection. Describe the personality, style, and intended use.',
-    thumbnail: characterStudiesThumbnail,
+    title: 'Be You',
+    category: 'Campaign Design, Graphic Design',
+    categories: ['Campaign Design', 'Graphic Design'],
+    year: '',
+    client: '',
+    tools: [],
+    description: 'A campaign presented through posters and public transit advertising mockups.',
+    thumbnail: beyou1,
     images: [
-      { src: characterStudiesVisual01, alt: 'Placeholder for a collection of character illustrations', width: 1600, height: 1200 },
-      { src: characterStudiesVisual02, alt: 'Placeholder for a portrait-format character expression sheet', width: 1200, height: 1500 },
+      { src: beyou1, alt: 'Be You — slide 1', width: 1920, height: 1080 },
+      { src: beyou2, alt: 'Be You — slide 2', width: 1920, height: 1080 },
+      { src: beyou3, alt: 'Be You — slide 3', width: 1920, height: 1080 },
     ],
     position: { x: 88, y: 18 },
     rotate: 0,
@@ -153,16 +172,18 @@ const starterProjects = [
   },
   {
     id: 'campaign-visuals',
-    title: 'Campaign Visuals',
-    category: 'Social Media Ads',
-    year: '2026',
-    client: 'Placeholder project',
-    tools: ['Adobe Photoshop', 'Adobe Illustrator'],
-    description: 'Placeholder for a social campaign. Describe the message, audience, and visual system across placements.',
-    thumbnail: campaignVisualsThumbnail,
+    title: 'COVID-19 Campaign',
+    category: 'Campaign Design, Graphic Design',
+    categories: ['Campaign Design', 'Graphic Design'],
+    year: '',
+    client: '',
+    tools: [],
+    description: 'Public health campaign visuals, outdoor advertising, and supporting collateral.',
+    thumbnail: covid191,
     images: [
-      { src: campaignVisualsVisual01, alt: 'Placeholder for a social media campaign overview', width: 1600, height: 1200 },
-      { src: campaignVisualsVisual02, alt: 'Placeholder for portrait-format social ad variations', width: 1200, height: 1500 },
+      { src: covid191, alt: 'COVID-19 Campaign — slide 1', width: 1920, height: 1080 },
+      { src: covid192, alt: 'COVID-19 Campaign — slide 2', width: 1920, height: 1080 },
+      { src: covid193, alt: 'COVID-19 Campaign — slide 3', width: 1920, height: 1080 },
     ],
     position: { x: 88, y: 58 },
     rotate: 0,
@@ -170,23 +191,28 @@ const starterProjects = [
   },
   {
     id: 'launch-ads',
-    title: 'Launch Ads',
-    category: 'Social Media Ads',
-    year: '2026',
-    client: 'Placeholder project',
-    tools: ['Adobe Photoshop', 'Figma'],
-    description: 'Placeholder for a product launch campaign. Replace with the brief and your contribution to the launch visuals.',
-    thumbnail: launchAdsThumbnail,
+    title: 'Visual Design Collection',
+    category: 'Graphic Design, Illustration',
+    categories: ['Graphic Design', 'Illustration'],
+    year: '',
+    client: '',
+    tools: [],
+    description: 'A collection of posters, illustrations, social media visuals, and layout studies.',
+    thumbnail: visualdesign1,
     images: [
-      { src: launchAdsVisual01, alt: 'Placeholder for product launch advertising visuals', width: 1600, height: 1200 },
-      { src: launchAdsVisual02, alt: 'Placeholder for launch campaign layout variations', width: 1600, height: 1000 },
+      { src: visualdesign1, alt: 'Visual Design Collection — slide 1', width: 1920, height: 1080 },
+      { src: visualdesign2, alt: 'Visual Design Collection — slide 2', width: 1920, height: 1080 },
+      { src: visualdesign3, alt: 'Visual Design Collection — slide 3', width: 1920, height: 1080 },
+      { src: visualdesign4, alt: 'Visual Design Collection — slide 4', width: 1920, height: 1080 },
+      { src: visualdesign5, alt: 'Visual Design Collection — slide 5', width: 1920, height: 1080 },
+      { src: visualdesign6, alt: 'Visual Design Collection — slide 6', width: 1920, height: 1080 },
+      { src: visualdesign7, alt: 'Visual Design Collection — slide 7', width: 1920, height: 1080 },
     ],
     position: { x: 88, y: 78 },
     rotate: 0,
     size: 'm',
   },
 ];
-
 
 // Drop mayora (0).webp … mayora (8).webp anywhere under src/assets.
 // URLs are emitted by Vite and respect VITE_BASE. No missing-file requests.

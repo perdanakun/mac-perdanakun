@@ -1,0 +1,26 @@
+/* Notes-specific formatting. Imported automatically by NotesApp.jsx. */
+.note-content .note-bullets {
+  max-width: 65ch;
+  margin: 10px 0 22px;
+  padding-left: 22px;
+  list-style: disc outside;
+}
+.note-content .note-bullets > li {
+  font-size: 14px;
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+}
+.note-content .note-bullets > li::marker { color: var(--color-muted); }
+.note-content .note-bullets > li + li { margin-top: 7px; }
+.note-content .note-items .note-bullets,
+.note-content .note-items .note-links { margin: 10px 0 0; }
+.note-content .note-items .note-bullets > li,
+.note-content .note-items .note-links > li {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.note-content .note-items .note-bullets > li + li,
+.note-content .note-items .note-links > li + li { margin-top: 7px; }
+.note-content .note-links { overflow-wrap: anywhere; }
+.note-content strong { font-weight: 600; }

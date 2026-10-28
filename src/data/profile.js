@@ -237,41 +237,143 @@ export const skillDialogs = {
 // item links, and a links list. Missing URLs render as plain text.
 export const notes = [
   {
-    id: 'about', title: '👋 about me', summary: 'a little about who i am and what i enjoy making.',
+    id: 'about',
+    title: '👋 about me',
+    summary: '10+ years of turning ideas into clear visual communication.',
     paragraphs: [
-      'Hi, I’m Perdana. I’m a visual designer based in Salatiga, Indonesia.',
-      'I’ve been making things in visual design for 10+ years. Icons are my specialty, but I also work on branding, illustration, packaging, and social media visuals.',
-      ['Find me on ', { text: 'LinkedIn', href: 'https://www.linkedin.com/in/perdanakun/' }, ' or visit ',
-        { text: 'my website', href: 'https://perdanakun.com' }, '.'],
-    ], items: [],
+      'Hi, I’m Perdana Kurniawan Arta, a graphic and visual designer with 10+ years of experience creating communication materials for digital and print.',
+      'Through Conania, I delivered 3,000+ design projects for startups, founders, and SMEs worldwide. My work spans icon and visual systems, social media campaigns, brand identities, editorial layouts, and event graphics.',
+      'I enjoy translating complex ideas into clear visuals. Alongside design, I support content planning, campaign concepts, and copywriting, and coordinate with clients and production partners to bring the work together.',
+      'I’m also developing AI-assisted creative workflows and web implementation skills through independent projects, including this interactive portfolio.',
+    ],
+    items: [],
   },
   {
-    id: 'experience', title: '💼 experience', summary: 'the teams and places that have shaped my work.', paragraphs: [],
+    id: 'experience',
+    title: '💼 experience',
+    summary: 'Independent practice, brand campaigns, and collaborative design work.',
+    paragraphs: [],
     items: [
-      { title: 'Visual Designer — Conania', meta: '2016–2026', description: '' },
-      { title: 'Social Media Designer — Sinidikara', meta: '2019–2022', description: '' },
+      {
+        title: 'Art Director & Lead Designer — Conania',
+        meta: 'March 2016 – July 2026 · Self-employed · Indonesia',
+        description: 'Delivered 3,000+ visual design projects across digital and print. Led design direction, coordinated freelance designers and production partners, and managed briefs, feedback, quality, and deadlines. Developed scalable icon and visual systems, infographics, and presentations. Approximately 95% of clients were international, with project communication primarily in written English.',
+      },
+      {
+        title: 'Freelance Graphic Designer — Sustainable Coconut Partnership',
+        meta: 'April 2026 · Freelance',
+        description: 'Developed event identity, communication materials, and merchandise for a sustainability event organised in collaboration with Unilever. Worked with the Communication & Community Engagement Executive on concepts and stakeholder feedback, prepared print-ready artwork, and supported follow-up communication and production needs.',
+      },
+      {
+        title: 'Graphic Designer — Sinidikara',
+        meta: 'December 2019 – January 2022 · Contract · Jakarta, Indonesia',
+        description: 'Contributed to growing Mayora’s social media community from 40K to 100K followers (+150%) through collaborative content strategy, visual design, and audience-informed iteration. Developed a consistent visual identity and content design system covering brands including Kopiko, Beng-Beng, and Le Minerale. Supported weekly content planning and copywriting, proposed the “Mayora Kamis Ceria” (Makaci) name, and designed its visual identity. Also produced Tokopedia product listing assets.',
+      },
+      {
+        title: 'Environmental Graphic Designer — Bank Mandiri',
+        meta: 'November – December 2019 · Freelance · Jakarta, Indonesia',
+        description: 'Managed concept development and implementation of environmental graphics for an internal culture campaign at Plaza Mandiri headquarters, including elevator and workplace branding. Presented concepts directly to Human Capital Division stakeholders and refined proposals through feedback.',
+      },
+      {
+        title: 'Design Curator — Kementerian Sekretariat Negara',
+        meta: 'July – August 2019 · Contract · Jakarta, Indonesia',
+        description: 'Selected as one of 80 student curators nationwide for Festival Gapura Cinta Negeri. Evaluated public submissions for thematic relevance, visual quality, and originality.',
+      },
+      {
+        title: 'Graphic Design Intern — Mehibi Studio',
+        meta: 'February – May 2016 · Remote',
+        description: 'Produced icon and illustration assets for international distribution channels, collaborating remotely on visual asset production.',
+      },
     ],
   },
   {
-    id: 'education', title: '🎓 education', summary: 'where i studied, explored, and found my direction.', paragraphs: [],
-    items: [{ title: 'Institut Kesenian Jakarta', meta: '2017–2021',
-      description: 'Bachelor of Design, Visual Communication Design.' }],
-  },
-  {
-    id: 'services', title: '✨ services', summary: 'got something in mind? here’s what i can help make.', paragraphs: [],
+    id: 'education',
+    title: '🎓 education & certification',
+    summary: 'Visual communication design and continued learning in UX.',
+    paragraphs: [],
     items: [
-      { title: 'Icon Design', description: 'A single icon or a whole family that feels like it belongs together.' },
-      { title: 'Branding', description: 'An identity for your brand, and the everyday things it lives on.' },
-      { title: 'Illustration', description: 'Characters and illustrations that help tell your story.' },
-      { title: 'Packaging', description: 'Labels and packaging with a clear visual direction.' },
-      { title: 'Social Media', description: 'Campaign visuals and layouts that work across your social channels.' },
+      {
+        title: 'Bachelor of Design — Institut Kesenian Jakarta',
+        meta: '2017 – 2021 · Jakarta, Indonesia',
+        description: 'Visual Communication Design. GPA: 3.70/4.00.',
+      },
+      {
+        title: 'Google UX Design Professional Certificate',
+        meta: 'August 2026 · Google / Coursera',
+        description: '',
+      },
     ],
   },
   {
-    id: 'links', title: '🔗 links', summary: 'a few other places you can find me.', paragraphs: [], items: [],
-    links: profile.contact.links.filter(link => link.href),
+    id: 'skills',
+    title: '🛠 skills & tools',
+    summary: 'The design, communication, and production skills behind my work.',
+    paragraphs: [],
+    items: [
+      {
+        title: 'Design & communication',
+        description: 'Visual communication, social media graphics, campaign design, event branding, visual identity, infographics, and presentation design. Content planning, copywriting support, stakeholder coordination, and project management.',
+      },
+      {
+        title: 'Editorial & print',
+        description: 'Book, magazine, and booklet layout; typography, information hierarchy, iconography, illustration, and print production.',
+      },
+      {
+        title: 'Design tools',
+        description: 'Adobe Illustrator, Adobe Photoshop, Adobe InDesign, Figma, and Canva.',
+      },
+      {
+        title: 'Multimedia',
+        description: 'CapCut, Adobe Premiere Pro, and Adobe Lightroom. Video editing, photo editing, and basic motion graphics.',
+      },
+      {
+        title: 'AI-assisted workflows',
+        description: 'AI-assisted ideation, content support, and creative workflows.',
+      },
+      {
+        title: 'Languages',
+        description: 'Bahasa Indonesia and English, including professional written communication with international clients.',
+      },
+    ],
+  },
+  {
+    id: 'services',
+    title: '✨ services',
+    summary: 'What I can help you design, from individual assets to visual systems.',
+    paragraphs: [],
+    items: [
+      { title: 'Icons & illustration', description: 'Custom icons, consistent icon families, and illustrations for digital and print applications.' },
+      { title: 'Visual identity', description: 'Brand graphics and visual systems that keep communication consistent across formats.' },
+      { title: 'Social media & campaigns', description: 'Campaign concepts, social media graphics, content design systems, and e-commerce listing assets.' },
+      { title: 'Editorial & print design', description: 'Books, magazines, booklets, and other communication materials with clear typography and information hierarchy.' },
+      { title: 'Event & environmental graphics', description: 'Event identities, communication materials, merchandise, and graphics for physical spaces.' },
+      { title: 'Infographics & presentations', description: 'Visual explanations and presentation layouts that make complex information easier to understand.' },
+    ],
+  },
+  {
+    id: 'development',
+    title: '🌱 what I’m learning',
+    summary: 'Exploring AI-assisted workflows and bringing design into the browser.',
+    paragraphs: [
+      'Since July 2026, I’ve been developing AI-assisted creative workflows and web implementation skills through self-directed learning and independent projects.',
+      'This live interactive portfolio is one of those projects: a way to explore how my visual design work can become an interactive experience.',
+    ],
+    items: [],
+  },
+  {
+    id: 'links',
+    title: '🔗 links & contact',
+    summary: 'Find my work or get in touch about a project.',
+    paragraphs: [],
+    items: [],
+    links: [
+      { id: 'website', label: 'Website — perdanakun.com', href: 'https://perdanakun.com' },
+      { id: 'linkedin', label: 'LinkedIn — perdanakun', href: 'https://www.linkedin.com/in/perdanakun/' },
+      { id: 'email', label: 'Email — perdanakurniawan25@gmail.com', href: 'mailto:perdanakurniawan25@gmail.com' },
+    ],
   },
 ];
+
 
 export const uiIcons = {
   'edit': ui_new_edit,

@@ -1,9 +1,34 @@
 import { useEffect, useRef, useState } from 'react';
 import UIIcon from './UIIcon.jsx';
 import { SearchField } from './Controls.jsx';
-import RichText, { NoteLink, plainNoteText } from './RichText.jsx';
+import RichText, { NoteLink, plainNoteText } from './NotesRichText.jsx';
+import { notes } from '../data/notes.js';
+import './NotesApp.css';
 
-export default function NotesApp({ notes, profile, mobile, requestedNote }) {
+export function noteSearchText(note) {
+  return [note.title, plainNoteText(note.summary),
+    ...(note.paragraphs || []).map(plainNoteText),
+    ...(note.bullets || []).map(plainNoteText),
+    ...(note.items || []).flatMap(item => [item.title, item.meta,
+      plainNoteText(item.description), ...(item.bullets || []).map(plainNoteText),
+      ...(item.links || []).map(link => link.label)]),
+    ...(note.links || []).map(link => link.label),
+  ].filter(Boolean).join(' ').toLocaleLowerCase();
+}
+
+function NoteBullets({ items }) {
+  if (!items?.length) return null;
+  return <ul className="note-bullets">{items.map((item, index) =>
+    <li key={index}><RichText value={item} /></li>)}</ul>;
+}
+
+function NoteLinks({ links }) {
+  if (!links?.length) return null;
+  return <ul className="note-links">{links.map(link =>
+    <li key={link.id || link.href}><NoteLink href={link.href}>{link.label}</NoteLink></li>)}</ul>;
+}
+
+export default function NotesApp({ profile, mobile, requestedNote }) {
   const [selected, setSelected] = useState(notes[0]?.id);
   const [query, setQuery] = useState('');
   const sidebar = useRef(null);
@@ -13,9 +38,7 @@ export default function NotesApp({ notes, profile, mobile, requestedNote }) {
       setSelected(requestedNote.id); setQuery('');
     }
   }, [requestedNote, notes]);
-  const visible = notes.filter(note => [note.title, ...(note.paragraphs || []).map(plainNoteText),
-    ...(note.items || []).map(item => `${item.title} ${plainNoteText(item.description)}`),
-    ...(note.links || []).map(link => link.label)].join(' ').toLocaleLowerCase().includes(query.toLocaleLowerCase()));
+  const visible = notes.filter(note => noteSearchText(note).includes(query.toLocaleLowerCase()));
   const active = visible.find(note => note.id === selected) ?? visible[0];
   function navigate(event, index) {
     const keys = ['ArrowDown', 'ArrowRight', 'ArrowUp', 'ArrowLeft', 'Home', 'End'];
@@ -48,14 +71,15 @@ export default function NotesApp({ notes, profile, mobile, requestedNote }) {
         hidden={note.id !== active.id} id={`note-panel-${note.id}`} aria-labelledby={`note-tab-${note.id}`}>
         <h2>{note.title}</h2>
         {(note.paragraphs || []).map((paragraph, index) => <p key={index}><RichText value={paragraph} /></p>)}
+        <NoteBullets items={note.bullets} />
         {note.items?.length > 0 && <ul className="note-items">{note.items.map((item, index) => <li key={index}>
           <h3>{item.href ? <NoteLink href={item.href}>{item.title}</NoteLink> : item.title}</h3>
           {item.meta && <p className="note-meta">{item.meta}</p>}
           {item.description && <p><RichText value={item.description} /></p>}
+          <NoteBullets items={item.bullets} />
+          <NoteLinks links={item.links} />
         </li>)}</ul>}
-        {note.links?.length > 0 && <ul className="note-links">{note.links.map(link => <li key={link.id || link.href}>
-          <NoteLink href={link.href}>{link.label}</NoteLink>
-        </li>)}</ul>}
+        <NoteLinks links={note.links} />
       </article>) : <div className="files-empty"><UIIcon name="search" size={40} /><p>{text.emptyMessage}</p></div>}
     </div>
   </div>;
