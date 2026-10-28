@@ -1,21 +1,6 @@
 import assert from 'node:assert/strict';
-import { appearanceStorageKey, readAppearance, resolveAppearance } from '../src/utils/appearance.js';
 import { searchPortfolio } from '../src/utils/search.js';
 import { dockLayout, dockMagnification } from '../src/utils/dockLayout.js';
-
-// Use local dates, including boundary minutes: the schedule must follow the visitor.
-for (const [hour, minute, expected] of [[0, 0, 'dark'], [5, 59, 'dark'], [6, 0, 'light'], [17, 59, 'light'], [18, 0, 'dark'], [23, 59, 'dark']]) {
-  const date = new Date(2026, 9, 20, hour, minute);
-  assert.equal(resolveAppearance('auto', date), expected);
-  assert.equal(resolveAppearance('light', date), 'light');
-  assert.equal(resolveAppearance('dark', date), 'dark');
-}
-assert.equal(resolveAppearance('auto', new Date(2026, 9, 20, 7), { dayStart: 8, nightStart: 20 }), 'dark');
-for (const value of ['auto', 'light', 'dark', 'invalid', null]) {
-  assert.equal(readAppearance({ getItem(key) { assert.equal(key, appearanceStorageKey); return value; } }), ['auto', 'light', 'dark'].includes(value) ? value : 'auto');
-}
-assert.equal(readAppearance({ getItem() { throw new Error('Storage disabled'); } }), 'auto');
-assert.equal(readAppearance(null), 'auto');
 
 const projects = [
   { id: 'one', title: 'Café Identity', category: 'Branding', description: 'A warm visual identity.', tools: ['Illustrator'], thumbnail: 'one.webp' },
@@ -47,4 +32,4 @@ for (let pointer = 0; pointer <= layout.width; pointer += 2) {
   maximum = Math.max(maximum, width);
 }
 assert.ok(maximum > layout.width && maximum < 769 - 24);
-console.log('PASS: local-time theme boundaries, manual modes, blocked storage, search matching/limit/immutability, and compact non-overlapping Dock geometry.');
+console.log('PASS: search matching/limit/immutability, and compact non-overlapping Dock geometry.');

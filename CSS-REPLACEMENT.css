@@ -1,3 +1,0 @@
-.dock-icon-scale { display: block; flex: 0 0 auto; width: var(--dock-icon-size); height: var(--dock-icon-size); transform-origin: 50% 100%; }
-.dock-icon-art { display: block; width: 100%; height: 100%; transform: scale(var(--dock-art-scale, 1)); transform-origin: center; pointer-events: none; }
-.dock-icon-scale img { display: block; width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 2px 2px rgb(0 0 0 / 0.16)); }

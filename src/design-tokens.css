@@ -1,4 +1,5 @@
-/* UI reference tokens. Source: references/ui/*.svg.
+/* UI reference tokens, derived from the original SVG design specimens
+ * (preserved in Git history).
  * Reference geometry/colors: Finder, Alert, notification, window controls,
  * Menubar Menu and desktop Dock. Current user overrides unify radii at 8px
  * and use the supplied light material alpha of .10. Dark alpha is retained.
