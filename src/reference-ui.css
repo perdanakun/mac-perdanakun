@@ -305,3 +305,7 @@
   text-shadow: var(--shadow-label);
 }
 
+
+/* Icon controls must not inherit the text-menu's horizontal padding. */
+.menu-bar .menu-bar__brand, .menu-bar .menu-status-button { padding: 0; }
+.menu-bar .menu-bar__brand .ui-icon, .menu-bar .menu-status .ui-icon { max-width: none; }

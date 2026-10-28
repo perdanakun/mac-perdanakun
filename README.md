@@ -60,7 +60,7 @@ Third-party attribution and the Apple Design Resources license are retained in `
 
 Mail sends to Perdana through Resend, with the visitor's address as `reply_to`. The sender and recipient are fixed on the server; visitors cannot redirect mail to arbitrary recipients. The compose form supports one attachment up to 1.5 MB, preserves the message after an error, and uses an idempotency key when retrying the same payload. A success message means Resend accepted the message, not that final inbox delivery has been verified.
 
-The colorful orb in the menu bar opens a Siri-inspired **text chat** called `perdana.ai`. It answers questions about Perdana using Gemini and the public portfolio knowledge adapted from `perdanakun/win95-perdanakun` at revision `6e0a4a6045905de9ebc845f0aa4cf17ec48546f8`. Edit `server/portfolio-knowledge.js` to update that context. This is a separate copy, not an automatic sync. The assistant is not Apple's Siri and does not use the microphone or control the computer.
+The orb in the Dock and menu bar opens **Ask**, a Siri-inspired text chat called `perdana.ai`. Ctrl/Cmd+K opens Search in the same glass panel; switch to Ask or select the Ask result to send a question. The first question expands the panel into a conversation. Closing or switching modes preserves the session; New chat clears it. Messages are sent to Google Gemini; answers may be imperfect. It answers questions about Perdana using Gemini and the public portfolio knowledge adapted from `perdanakun/win95-perdanakun` at revision `6e0a4a6045905de9ebc845f0aa4cf17ec48546f8`. Edit `server/portfolio-knowledge.js` to update that context. This is a separate copy, not an automatic sync. The assistant is not Apple's Siri and does not use the microphone or control the computer.
 
 The chat supports follow-up questions, retry, stop, and a new conversation. History is kept in memory until the page is reloaded; only the latest 12 messages are sent as context. Messages are processed by Google Gemini. Email contents and attachments are processed by Resend. Neither handler logs message contents or API keys.
 
@@ -87,3 +87,10 @@ Add the server variables above to **Project → Settings → Environment Variabl
 Vercel discovers `api/send-email.js` and `api/chat.js` as Node functions; their time budget is 30 seconds. A verified Resend sender domain is recommended for production; `onboarding@resend.dev` is limited by Resend's testing rules. The functions reject cross-origin browser requests, validate body/attachment sizes, and have a per-instance request limit (5 emails per 10 minutes, 20 chat requests per minute per IP). These memory-based limits reset on cold starts and do not coordinate across instances. Configure Vercel Firewall rate limits on both API paths for deployment-wide abuse control.
 
 `npm test` includes mocked provider success/failure, validation, rate limiting, bounded history, raw local request parsing, duplicate-send protection, and client timeout handling. It does not send real email or use a live Gemini key.
+
+### UI editing
+
+- Menu icon sizing: `src/data/profile.js` → `menuBar.iconSize` (12–28 px), with `iconScales` for individual Apple, Wi-Fi, profile, search, and assistant artwork. Icon-button padding is separated from text menus in `src/reference-ui.css`.
+- Search/Ask layout: `src/components/Spotlight.jsx` and `SiriAssistant.css`; conversation rendering: `SiriAssistant.jsx`.
+- Mail uses the available window height. The message scrolls internally; very short resized windows retain an outer scroll for access to every field.
+- Notes content and experience links: `src/data/notes.js`.

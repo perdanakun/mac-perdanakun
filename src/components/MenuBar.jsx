@@ -6,11 +6,12 @@ import menuWifi from '../assets/ui/wifi.svg?no-inline';
 import menuSearch from '../assets/ui/search.svg?no-inline';
 import menuProfile from '../assets/ui/profile.svg?no-inline';
 
-// Menu bar assets are explicit: local profile mappings cannot select older icons.
-const MENU_ICON_SIZE = 17; // Wi-Fi is the shared size reference.
-function MenuBarIcon({ src }) {
-  return <img className="ui-icon" src={src} width={MENU_ICON_SIZE} height={MENU_ICON_SIZE}
-    style={{ width: MENU_ICON_SIZE, height: MENU_ICON_SIZE, objectFit: 'contain' }} alt="" aria-hidden="true" draggable="false" />;
+// All menu artwork uses the same configurable box, including the assistant orb.
+function MenuBarIcon({ src, name, config }) {
+  const size = Math.min(28, Math.max(12, Number(config.iconSize) || 19));
+  const scale = config.iconScales?.[name] ?? 1;
+  return <img className="ui-icon" src={src} width={size} height={size}
+    style={{ width: size, height: size, objectFit: 'contain', transform: `scale(${scale})` }} alt="" aria-hidden="true" draggable="false" />;
 }
 
 const defaultClockOptions = { weekday: 'short', hour: '2-digit', minute: '2-digit', hour12: false };
@@ -86,7 +87,7 @@ export default function MenuBar({ profile, active, windows = [], mobile, desktop
   return <header ref={root} className="menu-bar" data-menu-bar onKeyDownCapture={panelKeys}>
     <div className="menu-bar__identity">
       <button type="button" className="menu-bar__brand menu-control" aria-label={config.brandLabel}
-        onClick={event => onAction?.('about', event.currentTarget)}><MenuBarIcon src={menuApple} /></button>
+        onClick={event => onAction?.('about', event.currentTarget)}><MenuBarIcon src={menuApple} name="apple" config={config} /></button>
       <strong className="menu-app-name">{active?.title || config.defaultApp}</strong>
       <nav className="desktop-menus" aria-label={config.menusLabel}>
         {config.menus.map(group => <div className={`desktop-menu ${group.secondary ? 'desktop-menu--secondary' : ''}`} key={group.id}
@@ -110,13 +111,13 @@ export default function MenuBar({ profile, active, windows = [], mobile, desktop
       </nav>
     </div>
     <div className="menu-status">
-      <span className="menu-indicator" role="img" aria-label={config.wifiLabel} title={config.wifiLabel}><MenuBarIcon src={menuWifi} /></span>
+      <span className="menu-indicator" role="img" aria-label={config.wifiLabel} title={config.wifiLabel}><MenuBarIcon src={menuWifi} name="wifi" config={config} /></span>
       <button type="button" className="menu-control menu-status-button menu-profile-button" aria-label="About Perdana" title="About Perdana"
-        onClick={event => onAction?.('about', event.currentTarget)}><MenuBarIcon src={menuProfile} /></button>
+        onClick={event => onAction?.('about', event.currentTarget)}><MenuBarIcon src={menuProfile} name="profile" config={config} /></button>
       <button type="button" className="menu-control menu-status-button" data-search-trigger aria-label={config.searchLabel} title={config.searchLabel}
-        onClick={event => onAction?.('search', event.currentTarget)}><MenuBarIcon src={menuSearch} /></button>
+        onClick={event => onAction?.('search', event.currentTarget)}><MenuBarIcon src={menuSearch} name="search" config={config} /></button>
       <button type="button" className="menu-control menu-status-button" aria-label="Ask perdana.ai" title="Ask perdana.ai"
-        aria-haspopup="dialog" onClick={event => onAction?.('assistant', event.currentTarget)}><AssistantOrb small /></button>
+        aria-haspopup="dialog" onClick={event => onAction?.('assistant', event.currentTarget)}><span className="menu-assistant-icon" style={{ width: Math.min(28, Math.max(12, Number(config.iconSize) || 19)), height: Math.min(28, Math.max(12, Number(config.iconSize) || 19)), transform: `scale(${config.iconScales?.assistant ?? 1})` }}><AssistantOrb small /></span></button>
       <time dateTime={now.toISOString()} aria-label={formatter.format(now)}>
         <span className="clock-full">{formatter.format(now)}</span><span className="clock-compact" aria-hidden="true">{compactFormatter.format(now)}</span>
       </time>

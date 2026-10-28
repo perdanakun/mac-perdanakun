@@ -93,6 +93,13 @@ export const notes = [
             },
             "; approximately 95% of clients were international."
           ]
+        ],
+        "links": [
+          {
+            "id": "conania",
+            "label": "Conania on Fiverr",
+            "href": "https://www.fiverr.com/conania"
+          }
         ]
       },
       {
@@ -140,6 +147,13 @@ export const notes = [
             " name and designed its visual identity."
           ],
           "Produced social media graphics and Tokopedia product listing assets."
+        ],
+        "links": [
+          {
+            "id": "mayora",
+            "label": "Mayora Official on Instagram",
+            "href": "https://www.instagram.com/mayoraofficial/"
+          }
         ]
       },
       {
@@ -201,26 +215,12 @@ export const notes = [
             },
             "3.70/4.00."
           ]
-        ],
-        "links": [
-          {
-            "id": "ikj",
-            "label": "Visit Institut Kesenian Jakarta",
-            "href": "https://www.ikj.ac.id/"
-          }
         ]
       },
       {
         "title": "Google UX Design Professional Certificate",
         "meta": "August 2026 · Google / Coursera",
-        "description": "Completed in August 2026.",
-        "links": [
-          {
-            "id": "ux-program",
-            "label": "About the Google UX Design programme",
-            "href": "https://grow.google/certificates/ux-design/"
-          }
-        ]
+        "description": "Completed in August 2026."
       }
     ]
   },

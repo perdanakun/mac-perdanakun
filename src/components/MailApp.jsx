@@ -18,7 +18,6 @@ export default function MailApp({ contact }) {
   const honeypot = useRef(null);
   const busy = useRef(false);
   const attempt = useRef(null);
-  const links = contact.links.filter(link => link.href);
 
   function selectAttachment(event) {
     const file = event.target.files?.[0];
@@ -55,7 +54,7 @@ export default function MailApp({ contact }) {
       </header>
         {pending && <p className="mail-feedback" role="status">Sending your message…</p>}
         {error && <p className="mail-feedback mail-feedback--error" role="alert">{error}</p>}
-        {sent && <p className="mail-feedback mail-feedback--success" role="status">Your message was sent. Thanks for reaching out!</p>}
+        {sent && <p className="mail-feedback mail-feedback--success" role="status">Message sent.</p>}
       </div>
       <fieldset className="mail-compose-fields" disabled={pending}>
         <legend className="sr-only">Email details</legend>
@@ -68,10 +67,9 @@ export default function MailApp({ contact }) {
           value={subject} onChange={event => setSubject(event.target.value)} /></label>
       </fieldset>
       <div className="mail-compose-body">
-        <p className="mail-compose-intro">{contact.message}</p>
         <label className="sr-only" htmlFor={`${id}-message`}>Message</label>
         <textarea id={`${id}-message`} name="message" required maxLength={10_000} disabled={pending}
-          value={message} onChange={event => setMessage(event.target.value)} placeholder="Write your message…" rows={7} />
+          value={message} onChange={event => setMessage(event.target.value)} placeholder="Write your message…" rows={3} />
         <div className="mail-honeypot" aria-hidden="true"><label>Leave this blank<input ref={honeypot} name="website" tabIndex={-1} autoComplete="off" /></label></div>
         <div className="mail-attachment-actions">
           <input ref={fileInput} type="file" className="sr-only" tabIndex={-1} aria-label="Choose attachment" onChange={selectAttachment} disabled={pending} />
@@ -80,14 +78,9 @@ export default function MailApp({ contact }) {
             <button type="button" aria-label="Remove attachment" disabled={pending} onClick={() => setAttachment(null)}><UIIcon name="close" size={12} /></button></span>
             : <small>One file · up to 1.5 MB</small>}
         </div>
-        <p className="mail-compose-note">Your email address lets Perdana reply to you.
-          {contact.email && <> Prefer your email app? <a href={`mailto:${contact.email}?subject=${encodeURIComponent(subject)}`}>Email Perdana</a>.</>}</p>
+
       </div>
     </form>
-    {links.length > 0 && <footer className="mail-other-links"><span>{profile.ui.contactOptions}</span><ul className="contact-links">
-      {links.map(link => <li key={link.id}><a href={link.href} target="_blank" rel="noopener noreferrer">
-        <UIIcon name="link" size={16} /><span>{link.label}</span><UIIcon name="external" size={13} />
-      </a></li>)}
-    </ul></footer>}
+
   </article>;
 }
