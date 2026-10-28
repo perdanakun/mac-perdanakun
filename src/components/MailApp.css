@@ -1,0 +1,29 @@
+.mail-compose-header { position: sticky; top: 0; z-index: 2; background: var(--color-surface); }
+.mail-compose-fields { min-width: 0; margin: 0; padding: 0 20px; border: 0; }
+.mail-compose-row { display: flex; align-items: center; gap: 10px; min-height: 40px; padding: 7px 0; border-bottom: 1px solid var(--color-divider); }
+.mail-compose-row > span:first-child { flex: 0 0 52px; color: var(--color-muted); font-size: 12px; }
+.mail-app .mail-compose-row input { flex: 1; min-width: 0; width: 100%; border: 0; background: transparent; padding: 5px 0; font-size: 13px; border-radius: 0; }
+.mail-app .mail-compose-row input:focus-visible { box-shadow: none; outline: 2px solid var(--color-focus); outline-offset: 2px; border-radius: var(--radius-ui); }
+.mail-compose-row .mail-recipient { color: var(--color-accent); font-size: 12px; }
+.mail-compose-body { padding: 18px 20px 20px; }
+.mail-compose-intro { margin-bottom: 14px; color: var(--color-muted); font-size: 12px; line-height: 1.6; }
+.mail-compose-body textarea { display: block; width: 100%; min-height: 150px; resize: vertical; padding: 12px; font-size: 13px; line-height: 1.65; }
+.mail-attachment-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin: 12px 0; }
+.mail-attachment-actions small { color: var(--color-muted); font-size: 11px; }
+.mail-attachment { display: inline-flex; align-items: center; gap: 6px; max-width: 100%; min-width: 0; font-size: 12px; }
+.mail-attachment > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mail-attachment button { display: grid; place-items: center; flex-shrink: 0; width: 28px; height: 28px; padding: 4px; border: 0; border-radius: var(--radius-ui); background: var(--color-secondary); }
+.mail-feedback { margin: 0; padding: 10px 20px; border-bottom: 1px solid var(--color-divider); background: var(--color-secondary); font-size: 12px; line-height: 1.5; }
+.mail-feedback--error { color: #9b2929; background: #fff1f0; }
+.mail-feedback--success { color: #216b43; background: #edf8f1; }
+.mail-compose-note { margin: 14px 0 0; color: var(--color-muted); font-size: 11px; line-height: 1.6; }
+.mail-honeypot { display: none; }
+.mail-other-links { display: grid; gap: 9px; padding: 18px 20px 22px; border-top: 1px solid var(--color-divider); }
+.mail-other-links > span { color: var(--color-muted); font-size: 11px; }
+@media (max-width: 768px) {
+  .mail-compose-fields { padding-inline: 16px; }
+  .mail-compose-row { min-height: 48px; }
+  .mail-app .mail-compose-row input, .mail-compose-body textarea { font-size: 16px; }
+  .mail-compose-body, .mail-other-links { padding-inline: 16px; }
+  .mail-attachment button { width: 44px; height: 44px; }
+}

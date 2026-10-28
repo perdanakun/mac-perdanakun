@@ -1,6 +1,6 @@
 # Perdana's portfolio
 
-A macOS-inspired visual design portfolio built with React, Framer Motion, and Vite. Projects appear on the desktop and in Finder and Gallery; Notes contains profile information, and Mail contains contact links. The current interface uses the light theme.
+A macOS-inspired visual design portfolio built with React, Framer Motion, and Vite. Projects appear on the desktop and in Finder and Gallery; Notes contains profile information, and Mail sends contact messages directly. The current interface uses the light theme.
 
 ## Development
 
@@ -55,3 +55,35 @@ Notes supports plain URLs and structured text/link fragments through `src/compon
 ## Attribution
 
 Third-party attribution and the Apple Design Resources license are retained in `LICENSE-THIRD-PARTY` and `licenses/`. Original design reference sheets and earlier source archives, patches, and validation snapshots are available in Git history.
+
+## Direct email and portfolio assistant
+
+Mail sends to Perdana through Resend, with the visitor's address as `reply_to`. The sender and recipient are fixed on the server; visitors cannot redirect mail to arbitrary recipients. The compose form supports one attachment up to 1.5 MB, preserves the message after an error, and uses an idempotency key when retrying the same payload. A success message means Resend accepted the message, not that final inbox delivery has been verified.
+
+The colorful orb in the menu bar opens a Siri-inspired **text chat** called `perdana.ai`. It answers questions about Perdana using Gemini and the public portfolio knowledge adapted from `perdanakun/win95-perdanakun` at revision `6e0a4a6045905de9ebc845f0aa4cf17ec48546f8`. Edit `server/portfolio-knowledge.js` to update that context. This is a separate copy, not an automatic sync. The assistant is not Apple's Siri and does not use the microphone or control the computer.
+
+The chat supports follow-up questions, retry, stop, and a new conversation. History is kept in memory until the page is reloaded; only the latest 12 messages are sent as context. Messages are processed by Google Gemini. Email contents and attachments are processed by Resend. Neither handler logs message contents or API keys.
+
+### Local setup
+
+Copy `.env.example` to `.env.local`, then fill in your own server values:
+
+| Variable | Purpose |
+| --- | --- |
+| `RESEND_API_KEY` | Resend API key |
+| `RESEND_FROM_EMAIL` | Sender authorized by your Resend account |
+| `CONTACT_TO_EMAIL` | Destination inbox; defaults to Perdana's public contact email |
+| `GEMINI_API_KEY` | Google AI Studio / Gemini API key |
+| `GEMINI_MODEL` | Optional model override; defaults to `gemini-3.5-flash-lite` |
+
+Run `npm run dev`. A Vite development middleware runs the same handlers as the Vercel functions, so Mail and chat work locally without an additional backend command. Restart the dev server after changing environment values. Without keys, both interfaces show an unavailable message; no fake success or canned AI response is returned.
+
+`npm run preview` serves the static production build only. Use `npm run dev` or a Vercel preview deployment when testing the API-backed features. The frontend calls `/api/send-email` and `/api/chat` at the origin root even when the site is built with a subpath.
+
+### Vercel setup
+
+Add the server variables above to **Project → Settings → Environment Variables** for the macOS project. Select the Preview and Production environments you intend to use, then redeploy. Environment variables in the Windows 95 project are not automatically shared with this project. Do not paste keys into source code or use `VITE_` prefixes for them.
+
+Vercel discovers `api/send-email.js` and `api/chat.js` as Node functions; their time budget is 30 seconds. A verified Resend sender domain is recommended for production; `onboarding@resend.dev` is limited by Resend's testing rules. The functions reject cross-origin browser requests, validate body/attachment sizes, and have a per-instance request limit (5 emails per 10 minutes, 20 chat requests per minute per IP). These memory-based limits reset on cold starts and do not coordinate across instances. Configure Vercel Firewall rate limits on both API paths for deployment-wide abuse control.
+
+`npm test` includes mocked provider success/failure, validation, rate limiting, bounded history, raw local request parsing, duplicate-send protection, and client timeout handling. It does not send real email or use a live Gemini key.

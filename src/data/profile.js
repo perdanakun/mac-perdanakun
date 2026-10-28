@@ -101,7 +101,7 @@ export const profile = {
       { id: 'edit', label: 'Edit', secondary: true, items: [ { label: 'Find…', action: 'search', shortcut: '⌘ / Ctrl K' } ] },
       { id: 'view', label: 'View', items: [ { label: 'Hide Desktop Icons', showLabel: 'Show Desktop Icons', action: 'toggle-desktop-icons' }, { label: 'Show Desktop', action: 'desktop' } ] },
       { id: 'window', label: 'Window', items: [ { label: 'Minimize', action: 'minimize' }, { label: 'Zoom', action: 'zoom' }, { label: 'Close Window', action: 'close' } ] },
-      { id: 'help', label: 'Help', secondary: true, items: [ { label: 'About Perdana', action: 'about' }, { label: 'Get in touch', action: 'mail' }, { label: 'Show welcome', action: 'welcome' } ] },
+      { id: 'help', label: 'Help', secondary: true, items: [ { label: 'About Perdana', action: 'about' }, { label: 'Get in touch', action: 'mail' }, { label: 'Ask perdana.ai', action: 'assistant' }, { label: 'Show welcome', action: 'welcome' } ] },
     ],
     brandIcon: 'brand',
     brandLabel: 'Perdana’s portfolio',
@@ -187,7 +187,7 @@ export const profile = {
   contact: {
     title: 'Let’s make something good.',
     message: 'Tell me what you’re working on, what you need, and when you need it. We can take it from there.',
-    email: '', // Add your real email here.
+    email: 'perdanakurniawan25@gmail.com',
     emailLabel: 'Email me',
     emailPlaceholder: 'Email will be added soon.',
     subject: 'Let’s work together',

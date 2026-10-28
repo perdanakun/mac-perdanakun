@@ -21,6 +21,8 @@ import TrashApp from './components/TrashApp.jsx';
 import FileInfo from './components/FileInfo.jsx';
 import Notifications from './components/Notifications.jsx';
 import Spotlight from './components/Spotlight.jsx';
+import SiriAssistant from './components/SiriAssistant.jsx';
+import { useAssistantChat } from './hooks/useAssistantChat.js';
 
 export default function App() {
   const mobile = useMobile();
@@ -28,10 +30,12 @@ export default function App() {
   const files = useProjectFiles(projects);
   const [skill, setSkill] = useState(null);
   const [spotlight, setSpotlight] = useState(null);
+  const [assistant, setAssistant] = useState(null);
+  const chat = useAssistantChat();
   const [noteRequest, setNoteRequest] = useState(null);
   const [notificationReplay, setNotificationReplay] = useState(0);
   const [desktopIconsVisible, setDesktopIconsVisible] = useState(true);
-  const overlay = Boolean(skill || spotlight);
+  const overlay = Boolean(skill || spotlight || assistant);
   const active = manager.windows.find(item => item.id === manager.activeId);
   const skillApp = dockApps.find(app => app.id === skill?.id);
   const openIds = new Set(manager.windows.filter(item => item.kind !== 'project').map(item => item.id));
@@ -60,8 +64,9 @@ export default function App() {
     openApp(dockApps.find(app => app.id === 'notes'), trigger);
   }
   function menuAction(action, trigger, extra) {
+    if (action === 'assistant') { setSkill(null); setSpotlight(null); setAssistant({ trigger }); return; }
     if (action === 'toggle-desktop-icons') { setDesktopIconsVisible(visible => !visible); return; }
-    if (action === 'search') { setSkill(null); setSpotlight({ trigger }); return; }
+    if (action === 'search') { chat.stop(); setAssistant(null); setSkill(null); setSpotlight({ trigger }); return; }
     if (action === 'about') { showBio(trigger); return; }
     if (action === 'welcome') { setNotificationReplay(value => value + 1); return; }
     if (action === 'desktop') { manager.windows.filter(item => !item.minimized).forEach(item => manager.minimize(item.id)); return; }
@@ -79,7 +84,8 @@ export default function App() {
   useEffect(() => {
     const keyboardSearch = event => {
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k' && !event.isComposing) {
-        event.preventDefault(); setSkill(null); setSpotlight(current => current || { trigger: document.activeElement });
+        event.preventDefault(); chat.stop(); setAssistant(null); setSkill(null);
+        setSpotlight(current => current || { trigger: document.querySelector('[data-search-trigger]') || document.activeElement });
       }
     };
     document.addEventListener('keydown', keyboardSearch);
@@ -145,6 +151,14 @@ export default function App() {
               setSpotlight(null);
               if (entry.project) openProject(entry.project, trigger);
               else openApp(entry.app, trigger);
+            }} />}
+        </AnimatePresence>
+        <AnimatePresence>
+          {assistant && <SiriAssistant chat={chat} trigger={assistant.trigger}
+            onClose={() => { chat.stop(); setAssistant(null); }}
+            onContact={() => {
+              chat.stop(); setAssistant(null);
+              openApp(dockApps.find(app => app.id === 'mail'), document.querySelector('[data-dock-app="mail"]'));
             }} />}
         </AnimatePresence>
         <AnimatePresence>

@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import UIIcon from './UIIcon.jsx';
+import AssistantOrb from './AssistantOrb.jsx';
 import menuApple from '../assets/ui/apple-home.svg?no-inline';
 import menuWifi from '../assets/ui/wifi.svg?no-inline';
 import menuSearch from '../assets/ui/search.svg?no-inline';
@@ -112,8 +113,10 @@ export default function MenuBar({ profile, active, windows = [], mobile, desktop
       <span className="menu-indicator" role="img" aria-label={config.wifiLabel} title={config.wifiLabel}><MenuBarIcon src={menuWifi} /></span>
       <button type="button" className="menu-control menu-status-button menu-profile-button" aria-label="About Perdana" title="About Perdana"
         onClick={event => onAction?.('about', event.currentTarget)}><MenuBarIcon src={menuProfile} /></button>
-      <button type="button" className="menu-control menu-status-button" aria-label={config.searchLabel} title={config.searchLabel}
+      <button type="button" className="menu-control menu-status-button" data-search-trigger aria-label={config.searchLabel} title={config.searchLabel}
         onClick={event => onAction?.('search', event.currentTarget)}><MenuBarIcon src={menuSearch} /></button>
+      <button type="button" className="menu-control menu-status-button" aria-label="Ask perdana.ai" title="Ask perdana.ai"
+        aria-haspopup="dialog" onClick={event => onAction?.('assistant', event.currentTarget)}><AssistantOrb small /></button>
       <time dateTime={now.toISOString()} aria-label={formatter.format(now)}>
         <span className="clock-full">{formatter.format(now)}</span><span className="clock-compact" aria-hidden="true">{compactFormatter.format(now)}</span>
       </time>

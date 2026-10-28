@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "test": "node tests/interactions.mjs && node tests/search-dock.mjs",
+    "test": "node tests/interactions.mjs && node tests/search-dock.mjs && node --test tests/api.test.mjs",
     "build": "vite build",
     "preview": "vite preview"
   },

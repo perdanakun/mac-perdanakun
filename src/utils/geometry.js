@@ -32,7 +32,7 @@ export function initialFrame(kind, index) {
       y: (bounds.bottom - height) / 2 + offset, width, height });
   }
   const width = Math.min(kind === 'info' ? 340 : kind === 'mail' ? 560 : kind === 'notes' ? 860 : kind === 'gallery' ? 980 : kind === 'trash' ? 720 : 900, bounds.right - bounds.left);
-  const height = Math.min(kind === 'info' ? 520 : kind === 'mail' ? 480 : kind === 'gallery' ? 680 : 650, bounds.bottom - bounds.top);
+  const height = Math.min(kind === 'info' ? 520 : kind === 'mail' ? 640 : kind === 'gallery' ? 680 : 650, bounds.bottom - bounds.top);
   const offset = (index % 4) * 22;
   return fitFrame({
     x: (window.innerWidth - width) / 2 + offset,
