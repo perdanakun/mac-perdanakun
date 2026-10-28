@@ -67,7 +67,7 @@ export default function Window({ record, order, focused, blocked, onFocus, onClo
     enabled: !record.maximized && present && !blocked && !record.minimized,
     read: readFrame, apply: applyFrame, settle,
     commit: next => onMove(record.id, next),
-        minimum: { width: ['notes', 'gallery', 'finder'].includes(record.kind) ? 480 : record.kind === 'info' ? 300 : 360, height: 240 },
+        minimum: { width: ['notes', 'gallery', 'finder', 'project'].includes(record.kind) ? 480 : record.kind === 'info' ? 300 : 360, height: 240 },
   });
   const drag = usePointerDrag({
     enabled: !record.maximized && present && !blocked && !record.minimized,

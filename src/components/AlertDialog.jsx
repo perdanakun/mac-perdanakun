@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 import { motion, useIsPresent, useReducedMotion } from 'framer-motion';
+import './SkillDialog.css';
 import { useSurfaceFocus } from '../hooks/useSurfaceFocus.js';
 
 export default function AlertDialog({ app, dialog, trigger, onClose, onContact }) {
@@ -13,11 +14,12 @@ export default function AlertDialog({ app, dialog, trigger, onClose, onContact }
       onPointerDown={event => { if (event.target === event.currentTarget) onClose(); }}>
       <motion.section ref={ref} role="alertdialog" aria-modal="true" tabIndex={-1}
         aria-labelledby={`skill-${app.id}-title`} aria-describedby={`skill-${app.id}-message`}
-        inert={!present} className="alert-dialog"
+        inert={!present} className="alert-dialog skill-dialog"
         initial={reduced ? undefined : { scale: .94, y: 12 }} animate={{ scale: 1, y: 0 }}
         transition={{ type: 'spring', stiffness: 440, damping: 30 }}>
+        <img className="skill-dialog__icon" src={app.icon || app.fallbackIcon} alt="" width="64" height="64"
+          onError={event => { if (app.fallbackIcon && event.currentTarget.src !== app.fallbackIcon) event.currentTarget.src = app.fallbackIcon; }} />
         <h2 id={`skill-${app.id}-title`}>{dialog.title}</h2>
-        <p className="skill-context">{dialog.context}</p>
         <p id={`skill-${app.id}-message`}>{dialog.message}</p>
         <div className="dialog-actions">
           <button type="button" className="button button--secondary" onClick={onClose}>{dialog.secondaryLabel}</button>

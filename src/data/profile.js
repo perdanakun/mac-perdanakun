@@ -1,18 +1,27 @@
+import ui_new_edit from '../assets/ui/edit.svg?no-inline';
+import ui_new_image from '../assets/ui/image.svg?no-inline';
+import ui_new_microphone from '../assets/ui/microphone.svg?no-inline';
+import ui_new_profile from '../assets/ui/profile.svg?no-inline';
+import ui_new_recent from '../assets/ui/recent.svg?no-inline';
+import ui_new_redo from '../assets/ui/redo.svg?no-inline';
+import ui_new_switch from '../assets/ui/switch.svg?no-inline';
+import ui_new_tags from '../assets/ui/tags.svg?no-inline';
+import ui_new_undo from '../assets/ui/undo.svg?no-inline';
 import ui_wifi from '../assets/ui/wifi.svg?no-inline';
 import ui_battery from '../assets/ui/battery.svg?no-inline';
-import ui_control_center from '../assets/ui/control-center.svg?no-inline';
+import ui_control_center from '../assets/ui/switch.svg?no-inline';
 import ui_sun from '../assets/ui/sun.svg?no-inline';
 import ui_moon from '../assets/ui/moon.svg?no-inline';
 import ui_auto from '../assets/ui/auto.svg?no-inline';
 import ui_message from '../assets/ui/message.svg?no-inline';
 import ui_bell from '../assets/ui/bell.svg?no-inline';
 
-import ui0 from '../assets/ui/folder.svg?no-inline';
+import ui0 from '../assets/ui/folder-small.svg?no-inline';
 import ui1 from '../assets/ui/file.svg?no-inline';
 import ui2 from '../assets/ui/desktop.svg?no-inline';
 import ui3 from '../assets/ui/apps.svg?no-inline';
 import ui4 from '../assets/ui/trash.svg?no-inline';
-import ui5 from '../assets/ui/gallery.svg?no-inline';
+import ui5 from '../assets/ui/image.svg?no-inline';
 import ui6 from '../assets/ui/notes.svg?no-inline';
 import ui7 from '../assets/ui/mail.svg?no-inline';
 import ui8 from '../assets/ui/chevron-left.svg?no-inline';
@@ -26,15 +35,15 @@ import ui15 from '../assets/ui/close.svg?no-inline';
 import ui16 from '../assets/ui/external.svg?no-inline';
 import ui17 from '../assets/ui/download.svg?no-inline';
 import ui18 from '../assets/ui/send.svg?no-inline';
-import ui19 from '../assets/ui/sidebar.svg?no-inline';
+import ui19 from '../assets/ui/side-menu-view.svg?no-inline';
 import ui20 from '../assets/ui/check.svg?no-inline';
-import ui21 from '../assets/ui/person.svg?no-inline';
+import ui21 from '../assets/ui/profile.svg?no-inline';
 import ui22 from '../assets/ui/link.svg?no-inline';
 import ui23 from '../assets/ui/restore.svg?no-inline';
-import ui24 from '../assets/reference/brand.svg?no-inline';
+import ui24 from '../assets/ui/apple-home.svg?no-inline';
 import ui25 from '../assets/reference/folder.png?no-inline';
 
-import desktopWallpaper from '../assets/wallpapers/desktop1.webp?no-inline';
+import desktopWallpaper from '../assets/wallpapers/desktop2.png?no-inline';
 import mobileWallpaper from '../assets/wallpapers/mobile.webp?no-inline';
 import illustratorIcon from '../assets/dock/illustrator.svg?no-inline';
 import photoshopIcon from '../assets/dock/photoshop.svg?no-inline';
@@ -205,25 +214,22 @@ export const dockApps = [
 
 export const skillDialogs = {
   illustrator: {
-    title: 'Let me handle the curves.',
-    context: '10+ years in visual design. Icons are my specialty.',
-    message: 'You bring the idea. I’ll bring the careful curves, consistent icons, and a healthy obsession with the details. Ready to make something together?',
-    secondaryLabel: 'Maybe later',
-    primaryLabel: 'Hire me',
+    title: 'Made for the details.',
+    message: 'Custom icons, illustrations, and brand graphics, crafted with 10+ years of visual design experience.',
+    secondaryLabel: 'Done',
+    primaryLabel: 'Get in touch',
   },
   photoshop: {
-    title: 'Your layers deserve some love.',
-    context: 'Campaign visuals, image editing, and composition.',
-    message: 'Another evening moving pixels? Let me take care of the visuals while you focus on your thing. Tell me what you have in mind.',
-    secondaryLabel: 'I’ll keep tinkering',
-    primaryLabel: 'Let’s talk',
+    title: 'Bring your visuals to life.',
+    message: 'Image editing, thoughtful compositions, and campaign visuals for your next project.',
+    secondaryLabel: 'Done',
+    primaryLabel: 'Get in touch',
   },
   figma: {
-    title: 'Good ideas need a clear layout.',
-    context: 'Visual systems, interface layouts, and prototypes.',
-    message: 'From the first frame to the little details that hold everything together, I can help give your idea a clear visual direction. Shall we start?',
-    secondaryLabel: 'Just looking',
-    primaryLabel: 'Work with me',
+    title: 'Give your ideas a clear form.',
+    message: 'Interface layouts, visual systems, and prototypes that make your ideas easier to explore.',
+    secondaryLabel: 'Done',
+    primaryLabel: 'Get in touch',
   },
 };
 
@@ -231,43 +237,55 @@ export const skillDialogs = {
 // item links, and a links list. Missing URLs render as plain text.
 export const notes = [
   {
-    id: 'about', title: 'About me', summary: 'Visual design, icons, and a little about me.',
+    id: 'about', title: '👋 about me', summary: 'a little about who i am and what i enjoy making.',
     paragraphs: [
-      'Hi, I’m Perdana, a visual designer based in Salatiga, Indonesia.',
-      'I’ve spent 10+ years in visual design. Iconography is my specialty, alongside branding, illustration, packaging, and social media visuals.',
+      'Hi, I’m Perdana. I’m a visual designer based in Salatiga, Indonesia.',
+      'I’ve been making things in visual design for 10+ years. Icons are my specialty, but I also work on branding, illustration, packaging, and social media visuals.',
       ['Find me on ', { text: 'LinkedIn', href: 'https://www.linkedin.com/in/perdanakun/' }, ' or visit ',
         { text: 'my website', href: 'https://perdanakun.com' }, '.'],
     ], items: [],
   },
   {
-    id: 'experience', title: 'Experience', summary: 'Selected roles in visual design.', paragraphs: [],
+    id: 'experience', title: '💼 experience', summary: 'the teams and places that have shaped my work.', paragraphs: [],
     items: [
       { title: 'Visual Designer — Conania', meta: '2016–2026', description: '' },
       { title: 'Social Media Designer — Sinidikara', meta: '2019–2022', description: '' },
     ],
   },
   {
-    id: 'education', title: 'Education', summary: 'Institut Kesenian Jakarta.', paragraphs: [],
+    id: 'education', title: '🎓 education', summary: 'where i studied, explored, and found my direction.', paragraphs: [],
     items: [{ title: 'Institut Kesenian Jakarta', meta: '2017–2021',
       description: 'Bachelor of Design, Visual Communication Design.' }],
   },
   {
-    id: 'services', title: 'Services', summary: 'Icons, branding, illustration, and more.', paragraphs: [],
+    id: 'services', title: '✨ services', summary: 'got something in mind? here’s what i can help make.', paragraphs: [],
     items: [
-      { title: 'Icon Design', description: 'Custom icons and consistent icon families.' },
-      { title: 'Branding', description: 'Visual identities and brand applications.' },
-      { title: 'Illustration', description: 'Characters and visual storytelling.' },
-      { title: 'Packaging', description: 'Labels and packaging graphics.' },
-      { title: 'Social Media', description: 'Campaign visuals and adaptable ad layouts.' },
+      { title: 'Icon Design', description: 'A single icon or a whole family that feels like it belongs together.' },
+      { title: 'Branding', description: 'An identity for your brand, and the everyday things it lives on.' },
+      { title: 'Illustration', description: 'Characters and illustrations that help tell your story.' },
+      { title: 'Packaging', description: 'Labels and packaging with a clear visual direction.' },
+      { title: 'Social Media', description: 'Campaign visuals and layouts that work across your social channels.' },
     ],
   },
   {
-    id: 'links', title: 'Links', summary: 'Website and social profiles.', paragraphs: [], items: [],
+    id: 'links', title: '🔗 links', summary: 'a few other places you can find me.', paragraphs: [], items: [],
     links: profile.contact.links.filter(link => link.href),
   },
 ];
 
 export const uiIcons = {
+  'edit': ui_new_edit,
+  'image': ui_new_image,
+  'microphone': ui_new_microphone,
+  'profile': ui_new_profile,
+  'recent': ui_new_recent,
+  'redo': ui_new_redo,
+  'switch': ui_new_switch,
+  'tags': ui_new_tags,
+  'undo': ui_new_undo,
+  'apple-home': ui24,
+  'folder-small': ui0,
+  'side-menu-view': ui19,
   'wifi': ui_wifi,
   'battery': ui_battery,
   'control-center': ui_control_center,

@@ -1,5 +1,16 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import UIIcon from './UIIcon.jsx';
+import menuApple from '../assets/ui/apple-home.svg?no-inline';
+import menuWifi from '../assets/ui/wifi.svg?no-inline';
+import menuSearch from '../assets/ui/search.svg?no-inline';
+import menuProfile from '../assets/ui/profile.svg?no-inline';
+
+// Menu bar assets are explicit: local profile mappings cannot select older icons.
+const MENU_ICON_SIZE = 17; // Wi-Fi is the shared size reference.
+function MenuBarIcon({ src }) {
+  return <img className="ui-icon" src={src} width={MENU_ICON_SIZE} height={MENU_ICON_SIZE}
+    style={{ width: MENU_ICON_SIZE, height: MENU_ICON_SIZE, objectFit: 'contain' }} alt="" aria-hidden="true" draggable="false" />;
+}
 
 const defaultClockOptions = { weekday: 'short', hour: '2-digit', minute: '2-digit', hour12: false };
 
@@ -74,7 +85,7 @@ export default function MenuBar({ profile, active, windows = [], mobile, desktop
   return <header ref={root} className="menu-bar" data-menu-bar onKeyDownCapture={panelKeys}>
     <div className="menu-bar__identity">
       <button type="button" className="menu-bar__brand menu-control" aria-label={config.brandLabel}
-        onClick={event => onAction?.('about', event.currentTarget)}><UIIcon name={config.brandIcon} size={18} /></button>
+        onClick={event => onAction?.('about', event.currentTarget)}><MenuBarIcon src={menuApple} /></button>
       <strong className="menu-app-name">{active?.title || config.defaultApp}</strong>
       <nav className="desktop-menus" aria-label={config.menusLabel}>
         {config.menus.map(group => <div className={`desktop-menu ${group.secondary ? 'desktop-menu--secondary' : ''}`} key={group.id}
@@ -98,10 +109,11 @@ export default function MenuBar({ profile, active, windows = [], mobile, desktop
       </nav>
     </div>
     <div className="menu-status">
-      <span className="menu-indicator" role="img" aria-label={config.wifiLabel} title={config.wifiLabel}><UIIcon name="wifi" size={17} /></span>
-      <span className="menu-indicator menu-indicator--battery" role="img" aria-label={config.batteryLabel} title={config.batteryLabel}><UIIcon name="battery" size={21} /></span>
+      <span className="menu-indicator" role="img" aria-label={config.wifiLabel} title={config.wifiLabel}><MenuBarIcon src={menuWifi} /></span>
+      <button type="button" className="menu-control menu-status-button menu-profile-button" aria-label="About Perdana" title="About Perdana"
+        onClick={event => onAction?.('about', event.currentTarget)}><MenuBarIcon src={menuProfile} /></button>
       <button type="button" className="menu-control menu-status-button" aria-label={config.searchLabel} title={config.searchLabel}
-        onClick={event => onAction?.('search', event.currentTarget)}><UIIcon name="search" size={16} /></button>
+        onClick={event => onAction?.('search', event.currentTarget)}><MenuBarIcon src={menuSearch} /></button>
       <time dateTime={now.toISOString()} aria-label={formatter.format(now)}>
         <span className="clock-full">{formatter.format(now)}</span><span className="clock-compact" aria-hidden="true">{compactFormatter.format(now)}</span>
       </time>

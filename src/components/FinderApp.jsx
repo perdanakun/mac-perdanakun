@@ -1,3 +1,4 @@
+import { projectCategories } from '../data/projects.js';
 import { useRef, useState } from 'react';
 import { profile, uiIcons } from '../data/profile.js';
 import TrashApp from './TrashApp.jsx';
@@ -15,7 +16,7 @@ export default function FinderApp({ projects, apps, mobile, onOpenProject, onOpe
   const [selection, setSelection] = useState(null);
   const list = useRef(null);
   const path = history.paths[history.index];
-  const categories = [...new Set(projects.map(project => project.category))];
+  const categories = [...new Set(projects.flatMap(projectCategories))];
   const category = path.startsWith('category:') ? path.slice(9) : null;
   const navigate = next => {
     if (next === path) return;
@@ -31,7 +32,7 @@ export default function FinderApp({ projects, apps, mobile, onOpenProject, onOpe
     ? apps.map(app => ({ id: `app-${app.id}`, title: app.label, type: 'app', app, icon: app.icon || app.fallbackIcon }))
     : path === 'projects'
       ? categories.map(name => ({ id: `folder-${name}`, title: name, type: 'folder', path: `category:${name}` }))
-      : projects.filter(project => !category || project.category === category)
+      : projects.filter(project => !category || projectCategories(project).includes(category))
         .map(project => ({ id: project.id, title: project.title, type: 'project', project, icon: project.thumbnail }));
   const visible = entries.filter(entry => entry.title.toLocaleLowerCase().includes(query.toLocaleLowerCase()))
     .sort((a, b) => a.title.localeCompare(b.title));

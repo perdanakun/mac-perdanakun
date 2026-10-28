@@ -107,7 +107,7 @@ export default function App() {
     if (record.kind === 'notes') return <NotesApp notes={notes} profile={profile} mobile={mobile} requestedNote={noteRequest} />;
     if (record.kind === 'mail') return <MailApp contact={profile.contact} />;
     const project = projects.find(item => item.id === record.projectId);
-    return project ? <ProjectGallery project={project} /> : null;
+    return project ? <ProjectGallery key={project.id} project={project} /> : null;
   }
 
   return (

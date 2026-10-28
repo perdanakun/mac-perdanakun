@@ -1,0 +1,8 @@
+/* Compact macOS alert: one app icon, centered title/body, two simple actions. */
+.alert-dialog.skill-dialog { width: min(300px,calc(100vw - 32px)); padding: 24px 16px 16px; text-align: center; border-radius: 12px; }
+.alert-dialog.skill-dialog > .skill-dialog__icon { display: block; width: 64px; height: 64px; margin: 0 auto 18px; object-fit: contain; }
+.alert-dialog.skill-dialog h2 { margin: 0 0 8px; font-size: 14px; line-height: 19px; font-weight: 600; }
+.alert-dialog.skill-dialog > p { margin: 0; font-size: 13px; line-height: 18px; }
+.alert-dialog.skill-dialog .dialog-actions { margin-top: 20px; gap: 8px; }
+.alert-dialog.skill-dialog .dialog-actions .button { min-height: 30px; padding: 5px 8px; border-radius: 6px; font-size: 13px; }
+@media (max-width: 768px) { .alert-dialog.skill-dialog .dialog-actions .button { min-height: 44px; } }

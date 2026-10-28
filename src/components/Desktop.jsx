@@ -9,6 +9,7 @@ export default function Desktop({ projects, mobile, windows, onOpen, iconsVisibl
     <main id="desktop-projects" className="desktop" aria-label={profile.ui.desktop} hidden={!iconsVisible}>
       {projects.map((project, index) => <Thumbnail key={project.id} project={project} index={index}
         position={positions[project.id] ?? project.position} mobile={mobile}
+        edgeAligned={!positions[project.id]}
         open={windows.some(item => item.id === `project-${project.id}` && !item.minimized)}
         onOpen={onOpen} onPosition={updatePosition} />)}
     </main>

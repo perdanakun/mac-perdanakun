@@ -1,3 +1,4 @@
+import { projectCategories } from '../data/projects.js';
 import { useState } from 'react';
 import { profile } from '../data/profile.js';
 import LazyImage from './LazyImage.jsx';
@@ -5,9 +6,9 @@ import UIIcon from './UIIcon.jsx';
 
 export default function GalleryApp({ projects, config, onOpenProject }) {
   const [category, setCategory] = useState(null);
-  const categories = [...new Set(projects.map(project => project.category))];
+  const categories = [...new Set(projects.flatMap(projectCategories))];
   const selected = categories.includes(category) ? category : null;
-  const visible = selected ? projects.filter(project => project.category === selected) : projects;
+  const visible = selected ? projects.filter(project => projectCategories(project).includes(selected)) : projects;
   const title = selected || config.allLabel;
   const count = `${visible.length} ${visible.length === 1 ? config.projectSingular : config.projectPlural}`;
   return <div className="gallery-app">
@@ -18,7 +19,7 @@ export default function GalleryApp({ projects, config, onOpenProject }) {
       </button>
       <p className="sidebar-heading">{config.collectionsLabel}</p>
       <div className="gallery-categories">{categories.map(name => <button key={name} type="button" className="sidebar-item"
-        aria-pressed={selected === name} onClick={() => setCategory(name)}><UIIcon name="folder" /><span>{name}</span></button>)}</div>
+        aria-pressed={selected === name} onClick={() => setCategory(name)}><UIIcon name="tags" /><span>{name}</span></button>)}</div>
     </aside>
     <section className="gallery-library" aria-label={title}>
       <header className="app-toolbar gallery-toolbar"><div className="gallery-heading"><h2>{title}</h2>

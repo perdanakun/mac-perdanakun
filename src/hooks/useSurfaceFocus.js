@@ -28,9 +28,22 @@ export function useSurfaceFocus(ref, { active, modal = false, onClose, restoreTa
     const frame = requestAnimationFrame(() => {
       if (!root.contains(document.activeElement)) first().focus({ preventScroll: true });
     });
+    let fullscreenOwned = false;
+    let fullscreenExitAt = -Infinity;
+    const fullscreenChanged = () => {
+      const element = document.fullscreenElement || document.webkitFullscreenElement;
+      const owned = Boolean(element && root.contains(element));
+      if (fullscreenOwned && !owned) fullscreenExitAt = performance.now();
+      fullscreenOwned = owned;
+    };
+    fullscreenChanged();
+    document.addEventListener('fullscreenchange', fullscreenChanged);
+    document.addEventListener('webkitfullscreenchange', fullscreenChanged);
     function keydown(event) {
       if (event.defaultPrevented || event.isComposing) return;
       if (event.key === 'Escape') {
+        // Let the browser exit the slideshow without closing/restoring its window.
+        if (fullscreenOwned || performance.now() - fullscreenExitAt < 400) return;
         event.preventDefault();
         event.stopPropagation();
         close.current();
@@ -53,6 +66,8 @@ export function useSurfaceFocus(ref, { active, modal = false, onClose, restoreTa
     document.addEventListener('focusin', keepFocus);
     return () => {
       cancelAnimationFrame(frame);
+      document.removeEventListener('fullscreenchange', fullscreenChanged);
+      document.removeEventListener('webkitfullscreenchange', fullscreenChanged);
       document.removeEventListener('keydown', keydown);
       document.removeEventListener('focusin', keepFocus);
     };

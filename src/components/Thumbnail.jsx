@@ -19,7 +19,7 @@ function preload(project) {
   }
 }
 
-export default function Thumbnail({ project, position, index, mobile, open, onOpen, onPosition }) {
+export default function Thumbnail({ project, position, index, mobile, open, onOpen, onPosition, edgeAligned = false }) {
   const ref = useRef(null);
   const reduced = useReducedMotion();
   const left = useMotionValue(0);
@@ -36,7 +36,12 @@ export default function Thumbnail({ project, position, index, mobile, open, onOp
   useLayoutEffect(() => {
     if (mobile) return;
     const place = () => {
-      const point = constrain(window.innerWidth * position.x / 100 - ref.current.offsetWidth / 2,
+      // Anchor initial columns to the screen edge, not a percentage of its width.
+      // Once dragged, preserve the user's position instead of snapping to a column.
+      const margin = clamp(window.innerWidth * .025, 24, 48);
+      const defaultX = position.x < 50 ? margin : window.innerWidth - margin - ref.current.offsetWidth;
+      const x = edgeAligned ? defaultX : window.innerWidth * position.x / 100 - ref.current.offsetWidth / 2;
+      const point = constrain(x,
         window.innerHeight * position.y / 100 - ref.current.offsetHeight / 2);
       left.set(point.x); top.set(point.y);
     };
@@ -45,7 +50,7 @@ export default function Thumbnail({ project, position, index, mobile, open, onOp
     observer.observe(ref.current);
     window.addEventListener('resize', place);
     return () => { observer.disconnect(); window.removeEventListener('resize', place); };
-  }, [mobile, position.x, position.y, left, top]);
+  }, [mobile, edgeAligned, position.x, position.y, left, top]);
 
   const drag = usePointerDrag({
     enabled: !mobile,

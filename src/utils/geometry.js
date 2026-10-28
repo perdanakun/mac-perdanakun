@@ -1,14 +1,8 @@
 export const clamp = (value, min, max) => Math.min(Math.max(value, min), Math.max(min, max));
 
 export function desktopBounds() {
-  const menu = document.querySelector('[data-menu-bar]')?.getBoundingClientRect();
-  const dock = document.querySelector('[data-dock]')?.getBoundingClientRect();
-  return {
-    left: 12,
-    top: (menu?.bottom ?? 28) + 12,
-    right: window.innerWidth - 12,
-    bottom: Math.max((menu?.bottom ?? 28) + 100, (dock?.top ?? window.innerHeight - 90) - 16),
-  };
+  // Desktop objects share the full viewport, including behind menu bar and Dock.
+  return { left: 0, top: 0, right: window.innerWidth, bottom: window.innerHeight };
 }
 
 export function fitFrame(frame) {
@@ -24,12 +18,25 @@ export function fitFrame(frame) {
 
 export function initialFrame(kind, index) {
   const bounds = desktopBounds();
+  if (kind === 'project') {
+    // Edge-to-edge 16:9 master + 174px navigator; no canvas padding.
+    // Vertical chrome: 34px title + 56px tools; no footer.
+    const navigatorWidth = 174, canvasPadding = 0, chromeHeight = 90;
+    const maxWidth = bounds.right * .92, maxHeight = bounds.bottom * .86;
+    const slideWidth = Math.max(1, Math.min(maxWidth - navigatorWidth - canvasPadding,
+      (maxHeight - chromeHeight - canvasPadding) * 16 / 9));
+    const width = Math.min(bounds.right, slideWidth + navigatorWidth + canvasPadding);
+    const height = Math.min(bounds.bottom, slideWidth * 9 / 16 + chromeHeight + canvasPadding);
+    const offset = (index % 4) * 12;
+    return fitFrame({ x: (bounds.right - width) / 2 + offset,
+      y: (bounds.bottom - height) / 2 + offset, width, height });
+  }
   const width = Math.min(kind === 'info' ? 340 : kind === 'mail' ? 560 : kind === 'notes' ? 860 : kind === 'gallery' ? 980 : kind === 'trash' ? 720 : 900, bounds.right - bounds.left);
   const height = Math.min(kind === 'info' ? 520 : kind === 'mail' ? 480 : kind === 'gallery' ? 680 : 650, bounds.bottom - bounds.top);
   const offset = (index % 4) * 22;
   return fitFrame({
     x: (window.innerWidth - width) / 2 + offset,
-    y: bounds.top + 12 + offset,
+    y: 48 + offset,
     width, height,
   });
 }
