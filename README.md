@@ -1,36 +1,8 @@
-# Perdana — unified UI radius
+# Perdana's portfolio
 
-Full project source, including the previous panel fix and linked Notes layout. All rounded HTML/CSS UI components now share one radius token.
+A macOS-inspired visual design portfolio built with React, Framer Motion, and Vite. Projects appear on the desktop and in Finder and Gallery; Notes contains profile information, and Mail contains contact links. The current interface uses the light theme.
 
-## Change all radii
-
-Edit one value in `src/design-tokens.css`:
-
-```css
-:root {
-  --radius-ui: 8px;
-}
-```
-
-Window, Dock, notifications, dropdowns, Appearance, Search, dialogs, buttons, search fields, sidebar selections, Finder entries, Gallery tiles, tooltips, note rows and mobile controls consume this token. Previous component-specific tokens are compatibility aliases pointing to it, not separate values. All 63 positive hardcoded CSS radius declarations have been replaced, including mobile overrides.
-
-Set `--radius-ui: 4px` for squarer corners or `12px` for softer corners. No separate dark-theme edit is required.
-
-Intentional structural corners stay flush: the sidebar/content seam, maximized windows, transparent resize handles and the bottom edge of mobile sheets. Pseudo-surfaces that use `inherit` follow their parent. The geometry of embedded icon artwork is part of its SVG/bitmap, rather than a CSS radius.
-
-## Apply only the CSS update
-
-If you already use the last panel-fix revision, replace these three files together:
-
-- `src/design-tokens.css`
-- `src/styles.css`
-- `src/reference-ui.css`
-
-No import change or new dependency is required. This keeps local edits in your other project files intact. The archive also includes the full project for a complete replacement.
-
-The supplied light alpha values (`.10` for panel and Dock) are preserved; dark alpha stays at the values in your pasted file (`.72` panel, `.39` Dock). The explicitly requested glass surfaces no longer get forced opaque by the reduced-transparency override. The thin-rim treatment from the previous border guidance is included.
-
-## Install
+## Development
 
 Use Node.js 22.12+ (22.x) or 24+.
 
@@ -39,66 +11,47 @@ npm ci
 npm run dev
 ```
 
-Build production with `npm run build`. The full `src` directory must be replaced together, since components, reference assets and styles share imports. Environment values stay in your local environment. Dependencies and `dist` are excluded from this archive.
+## Checks and production build
 
-## Window fix
-
-The previous window-level blur, inset sidebar and decorative pseudo-frame were separate surfaces. They could create a doubled edge and let wallpaper/window compositing affect the sidebar seam.
-
-The new composition is deliberately simple:
-
-- One opaque window background.
-- A full-height left sidebar, flush with the window edge.
-- A right content pane directly beside it, separated by one thin divider.
-- Only the outer window clips rounded corners. The sidebar has no inset margin, separate rounded frame, shadow or backdrop blur.
-
-Finder, Notes and Gallery use the same two-column grid; their sidebar widths remain independently configurable. Existing window drag, resize, minimize, zoom and focus handling remain in place.
-
-| Theme | Sidebar | Content |
-|---|---|---|
-| Light | `#ECECEC` | `#FFFFFF` |
-| Dark | `#262626` | `#1A1A1A` |
-
-Floating system surfaces (Dock, dropdowns, alerts and notifications) still use the original supplied SVG material references. The later screenshots override the inset window composition, not those separate controls.
-
-## Simplified apps
-
-Notes now shows Search, note titles and one-line previews on the left; one title and the note body on the right. Repeated document labels, role/location metadata, folder labels and note-count footers are removed. An optional Download CV action still appears when a CV URL is configured.
-
-The starter biography is concise, placeholder instructions are removed, and an empty Clients note is replaced by Links. Existing known company names/dates are retained without inventing achievements or URLs.
-
-Gallery has one compact title/count header followed directly by the image grid. The duplicate hero heading, subtitle, sidebar total and footer count are removed. Category filtering and project opening are preserved.
-
-## Clickable note links
-
-`RichText.jsx` renders real anchors without injecting HTML. Plain HTTP(S)/mailto URLs in text become links. Structured fragments let you choose a readable label:
-
-```js
-paragraphs: [
-  ['Find me on ', { text: 'LinkedIn', href: 'https://www.linkedin.com/in/perdanakun/' }, '.'],
-],
-links: [
-  { id: 'website', label: 'My website', href: 'https://perdanakun.com' },
-],
+```sh
+npm test
+npm run build
+npm run preview
 ```
 
-Items may also have an optional `href`. External HTTP(S) links open in a new tab with `noopener noreferrer`. Unsupported URL protocols render as ordinary text. Search includes structured paragraph text and link labels.
+The logic tests cover window resizing and focus, virtual Trash, portfolio search, and Dock geometry. The virtual Trash changes only the current tab's session state; it does not delete project source files.
 
-## Files
+Vite builds the site into `dist/`. The default base URL is `/`. To host under a subpath, set `VITE_BASE` in a local `.env` file using `.env.example`, or build with:
 
-- `src/design-tokens.css`: canonical theme/material aliases and the new pane colors.
-- `src/styles.css`: base interaction layout.
-- `src/reference-ui.css`: SVG-derived controls plus the revised flat two-pane window composition.
-- `src/components/NotesApp.jsx`: lean note layout and linked content.
-- `src/components/GalleryApp.jsx`: compact header and gallery grid.
-- `src/components/RichText.jsx`: structured/plain-text links.
-- `src/data/profile.js`: editable profile, notes, and links.
-- `references/ui/`: the 13 original SVG sheets, preserved as reference resources and excluded from runtime downloads.
+```sh
+VITE_BASE=/portfolio/ npm run build
+```
 
-The prior SVG-derived traffic controls, icons, material densities, buttons, popups, alerts, notifications, Dock, mobile sheets and thumbnail viewport fix are included in this full source replacement. The personal wallpapers and existing project artwork remain in the project.
+`vercel.json` contains the deployment cache headers. Keep environment values local; generated output and dependencies are excluded by `.gitignore`.
 
-## Verification
+## Editing content and appearance
 
-`VALIDATION.json` records the current production builds at `/` and `/portfolio/`, 23 functional/browser checks and 80 radius/appearance assertions across light/dark and mobile. The checks include changing the shared token live from 8px to 4px and back, plus keeping the requested Dock transparency when the browser reports reduced transparency.
+| File or directory | Purpose |
+| --- | --- |
+| `src/data/projects.js` | Project titles, categories, images, and desktop positions |
+| `src/data/profile.js` | Profile, contact links, Dock apps, icons, and interface labels |
+| `src/data/notes.js` | Notes content rendered by the Notes app |
+| `src/assets/projects/` | Portfolio artwork and fallback project images |
+| `src/assets/dock/`, `src/assets/reference/`, `src/assets/ui/` | Icons used by the interface |
+| `src/assets/wallpapers/` | Active desktop and mobile wallpapers |
+| `src/assets/cursors/` | Custom cursors used by the stylesheet |
+| `src/design-tokens.css` | Shared colors, materials, spacing, and corner radius |
+| `src/styles.css`, `src/reference-ui.css` | Layout, interaction, and visual styles |
+| `src/components/` | Desktop, windows, apps, dialogs, and mobile sheets |
+| `src/hooks/`, `src/utils/` | Interaction state and shared logic |
+| `tests/` | Logic checks runnable with `npm test` |
 
-The remaining panel and link behavior is checked through window drag/resize, Spotlight, Notes links, Gallery filtering, virtual Trash and sheets at 360/390/768/820px widths. `SOURCE-MANIFEST.json` records the source hashes included in this archive.
+Change `--radius-ui` in `src/design-tokens.css` to update the shared interface corner radius.
+
+Project assets use Vite imports with `?no-inline` so they can be served as separate files. Mayora slides are discovered automatically from files named `mayora (0).webp`, `mayora (1).webp`, and so on anywhere under `src/assets/`, and sorted by number. The `everyday-icons` SVGs remain as the Mayora fallback when no matching slides exist.
+
+Notes supports plain URLs and structured text/link fragments through `src/components/NotesRichText.jsx`. Empty CV and contact URLs remain hidden or disabled until configured.
+
+## Attribution
+
+Third-party attribution and the Apple Design Resources license are retained in `LICENSE-THIRD-PARTY` and `licenses/`. Original design reference sheets and earlier source archives, patches, and validation snapshots are available in Git history.
