@@ -55,6 +55,12 @@ export function createChatHandler({ env = process.env, fetchImpl = globalThis.fe
       if (!text) throw new RequestError(502, 'Gemini returned no text. Please rephrase your question and try again.');
       return res.status(200).json({ text });
     } catch (error) {
+      if (error?.name === 'TimeoutError' || error?.name === 'AbortError') {
+        return res.status(504).json({ error: 'Gemini took too long to respond. Please try again.' });
+      }
+      if (error instanceof TypeError) {
+        return res.status(502).json({ error: 'Could not connect to Gemini. Please try again shortly.' });
+      }
       return respondToError(res, error, 'The assistant could not answer this time. Please try again.');
     }
   };

@@ -110,7 +110,7 @@ test('Chat carries bounded conversation history without letting clients supply a
 test('Chat validates input and handles absent config or unusable upstream responses honestly', async () => {
   for (const prompt of ['', ' ', null, 1, 'x'.repeat(4001)]) assert.equal((await invoke(chatHandler(), { prompt })).code, 400);
   assert.equal((await invoke(chatHandler({ env: {} }), { prompt: 'Hello' })).code, 503);
-  for (const fetchImpl of [async () => response({ error: 'key detail' }, 429), async () => response({ candidates: [] }),
+  for (const fetchImpl of [async () => response({ candidates: [] }),
     async () => { throw new Error('network failed'); }]) {
     const result = await invoke(chatHandler({ fetchImpl }), { prompt: 'Hello' });
     assert.equal(result.code, 502); assert.equal(result.body.text, undefined);
@@ -127,4 +127,44 @@ test('Browser API client surfaces non-JSON endpoints, provider failures, and tim
     globalThis.fetch = async (_url, { signal }) => new Promise((_resolve, reject) => signal.addEventListener('abort', () => reject(new DOMException('Aborted', 'AbortError'))));
     await assert.rejects(postPortfolio('chat', {}, { timeout: 5 }), /too long/);
   } finally { globalThis.fetch = original; }
+});
+
+test('Gemini errors distinguish quota, credentials and missing models without leaking provider details', async () => {
+  for (const [status, match] of [[400, /rejected/], [401, /key is invalid/], [403, /access denied/], [404, /model is unavailable/], [429, /quota exceeded/], [503, /temporarily unavailable/]]) {
+    const result = await invoke(chatHandler({ fetchImpl: async () => response({ error: { message: 'secret-provider-detail' } }, status) }), { prompt: 'Hello' });
+    assert.equal(result.code, status === 429 ? 429 : 502);
+    assert.match(result.body.error, match);
+    assert.ok(!JSON.stringify(result.body).includes('secret-provider-detail'));
+  }
+});
+
+
+test('Browser deadline settles even when transport or response body ignores abort', async () => {
+  const original = globalThis.fetch;
+  try {
+    globalThis.fetch = () => new Promise(() => {});
+    await assert.rejects(postPortfolio('chat', {}, { timeout: 5 }), /too long/);
+    globalThis.fetch = async () => ({ ok: true, json: () => new Promise(() => {}) });
+    await assert.rejects(postPortfolio('chat', {}, { timeout: 5 }), /too long/);
+    const controller = new AbortController();
+    const request = postPortfolio('chat', {}, { signal: controller.signal });
+    controller.abort();
+    await assert.rejects(request, { name: 'AbortError' });
+    let called = false;
+    globalThis.fetch = async () => { called = true; return response({ text: 'Unexpected' }); };
+    await assert.rejects(postPortfolio('chat', {}, { signal: controller.signal }), { name: 'AbortError' });
+    assert.equal(called, false);
+  } finally { globalThis.fetch = original; }
+});
+
+
+test('Chat reports provider timeout and connection failures distinctly', async () => {
+  for (const [failure, status, message] of [
+    [new DOMException('expired', 'TimeoutError'), 504, /took too long/],
+    [new TypeError('fetch failed'), 502, /connect to Gemini/],
+  ]) {
+    const result = await invoke(chatHandler({ fetchImpl: async () => { throw failure; } }), { prompt: 'Hello' });
+    assert.equal(result.code, status);
+    assert.match(result.body.error, message);
+  }
 });
