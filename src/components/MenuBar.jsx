@@ -8,7 +8,7 @@ import menuProfile from '../assets/ui/profile.svg?no-inline';
 
 // All menu artwork uses the same configurable box, including the assistant orb.
 function MenuBarIcon({ src, name, config }) {
-  const size = Math.min(28, Math.max(12, Number(config.iconSize) || 19));
+  const size = Math.min(28, Math.max(8, Number(config.iconSize) || 9.5));
   const scale = config.iconScales?.[name] ?? 1;
   return <img className="ui-icon" src={src} width={size} height={size}
     style={{ width: size, height: size, objectFit: 'contain', transform: `scale(${scale})` }} alt="" aria-hidden="true" draggable="false" />;
@@ -117,7 +117,7 @@ export default function MenuBar({ profile, active, windows = [], mobile, desktop
       <button type="button" className="menu-control menu-status-button" data-search-trigger aria-label={config.searchLabel} title={config.searchLabel}
         onClick={event => onAction?.('search', event.currentTarget)}><MenuBarIcon src={menuSearch} name="search" config={config} /></button>
       <button type="button" className="menu-control menu-status-button" aria-label="Ask perdana.ai" title="Ask perdana.ai"
-        aria-haspopup="dialog" onClick={event => onAction?.('assistant', event.currentTarget)}><span className="menu-assistant-icon" style={{ width: Math.min(28, Math.max(12, Number(config.iconSize) || 19)), height: Math.min(28, Math.max(12, Number(config.iconSize) || 19)), transform: `scale(${config.iconScales?.assistant ?? 1})` }}><AssistantOrb small /></span></button>
+        aria-haspopup="dialog" onClick={event => onAction?.('assistant', event.currentTarget)}><span className="menu-assistant-icon" style={{ width: Math.min(28, Math.max(8, Number(config.iconSize) || 9.5)), height: Math.min(28, Math.max(8, Number(config.iconSize) || 9.5)), transform: `scale(${config.iconScales?.assistant ?? 1})` }}><AssistantOrb small /></span></button>
       <time dateTime={now.toISOString()} aria-label={formatter.format(now)}>
         <span className="clock-full">{formatter.format(now)}</span><span className="clock-compact" aria-hidden="true">{compactFormatter.format(now)}</span>
       </time>

@@ -93,7 +93,7 @@ export const profile = {
   },
   menuBar: {
     // Shared rendered size (px); scales allow optical adjustment of individual artwork.
-    iconSize: 19,
+    iconSize: 9.5,
     iconScales: { apple: 1, wifi: 1, profile: 1, search: 1, assistant: 1 },
     menusLabel: 'Portfolio menu', defaultApp: 'Finder',
     wifiLabel: 'Wi-Fi icon (visual indicator)', batteryLabel: 'Battery icon (visual indicator)',
