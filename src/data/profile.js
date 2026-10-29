@@ -92,6 +92,9 @@ export const profile = {
     ],
   },
   menuBar: {
+    // Shared rendered size (px); scales allow optical adjustment of individual artwork.
+    iconSize: 9.5,
+    iconScales: { apple: 1, wifi: 1, profile: 1, search: 1, assistant: 1 },
     menusLabel: 'Portfolio menu', defaultApp: 'Finder',
     wifiLabel: 'Wi-Fi icon (visual indicator)', batteryLabel: 'Battery icon (visual indicator)',
     searchLabel: 'Search portfolio',
@@ -101,7 +104,7 @@ export const profile = {
       { id: 'edit', label: 'Edit', secondary: true, items: [ { label: 'Find…', action: 'search', shortcut: '⌘ / Ctrl K' } ] },
       { id: 'view', label: 'View', items: [ { label: 'Hide Desktop Icons', showLabel: 'Show Desktop Icons', action: 'toggle-desktop-icons' }, { label: 'Show Desktop', action: 'desktop' } ] },
       { id: 'window', label: 'Window', items: [ { label: 'Minimize', action: 'minimize' }, { label: 'Zoom', action: 'zoom' }, { label: 'Close Window', action: 'close' } ] },
-      { id: 'help', label: 'Help', secondary: true, items: [ { label: 'About Perdana', action: 'about' }, { label: 'Get in touch', action: 'mail' }, { label: 'Show welcome', action: 'welcome' } ] },
+      { id: 'help', label: 'Help', secondary: true, items: [ { label: 'About Perdana', action: 'about' }, { label: 'Get in touch', action: 'mail' }, { label: 'Ask perdana.ai', action: 'assistant' }, { label: 'Show welcome', action: 'welcome' } ] },
     ],
     brandIcon: 'brand',
     brandLabel: 'Perdana’s portfolio',
@@ -186,8 +189,7 @@ export const profile = {
 
   contact: {
     title: 'Let’s make something good.',
-    message: 'Tell me what you’re working on, what you need, and when you need it. We can take it from there.',
-    email: '', // Add your real email here.
+    email: 'perdanakurniawan25@gmail.com',
     emailLabel: 'Email me',
     emailPlaceholder: 'Email will be added soon.',
     subject: 'Let’s work together',
@@ -209,6 +211,7 @@ export const dockApps = [
   { id: 'gallery', label: 'Gallery', kind: 'gallery', dividerBefore: true, icon: galleryIcon, fallbackIcon: makeIcon('G', '#C4D8F5', '#7398D1', '#243B61') },
   { id: 'notes', label: 'Notes', kind: 'notes', icon: notesIcon, fallbackIcon: makeIcon('≡', '#FFF0A2', '#EBC958', '#604F25') },
   { id: 'mail', label: 'Mail', kind: 'mail', icon: mailIcon, fallbackIcon: makeIcon('@', '#94DAD2', '#3B989E') },
+  { id: 'assistant', label: 'Siri · perdana.ai', kind: 'assistant', icon: new URL('../assets/dock/assistant.svg', import.meta.url).href, fallbackIcon: makeIcon('AI', '#9ADDF2', '#8A65CC') },
   { id: 'trash', label: 'Trash', kind: 'trash', dividerBefore: true, icon: trashIcon, fullIcon: trashFullIcon, fallbackIcon: makeIcon('⌑', '#E4E8EC', '#A3ABB4', '#45505C') },
 ];
 
