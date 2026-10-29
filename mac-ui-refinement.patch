@@ -1,0 +1,675 @@
+diff --git a/README.md b/README.md
+index 38ebbaa..b357466 100644
+--- a/README.md
++++ b/README.md
+@@ -60,7 +60,7 @@ Third-party attribution and the Apple Design Resources license are retained in `
+ 
+ Mail sends to Perdana through Resend, with the visitor's address as `reply_to`. The sender and recipient are fixed on the server; visitors cannot redirect mail to arbitrary recipients. The compose form supports one attachment up to 1.5 MB, preserves the message after an error, and uses an idempotency key when retrying the same payload. A success message means Resend accepted the message, not that final inbox delivery has been verified.
+ 
+-The colorful orb in the menu bar opens a Siri-inspired **text chat** called `perdana.ai`. It answers questions about Perdana using Gemini and the public portfolio knowledge adapted from `perdanakun/win95-perdanakun` at revision `6e0a4a6045905de9ebc845f0aa4cf17ec48546f8`. Edit `server/portfolio-knowledge.js` to update that context. This is a separate copy, not an automatic sync. The assistant is not Apple's Siri and does not use the microphone or control the computer.
++The orb in the Dock and menu bar opens **Ask**, a Siri-inspired text chat called `perdana.ai`. Ctrl/Cmd+K opens Search in the same glass panel; switch to Ask or select the Ask result to send a question. The first question expands the panel into a conversation. Closing or switching modes preserves the session; New chat clears it. Messages are sent to Google Gemini; answers may be imperfect. It answers questions about Perdana using Gemini and the public portfolio knowledge adapted from `perdanakun/win95-perdanakun` at revision `6e0a4a6045905de9ebc845f0aa4cf17ec48546f8`. Edit `server/portfolio-knowledge.js` to update that context. This is a separate copy, not an automatic sync. The assistant is not Apple's Siri and does not use the microphone or control the computer.
+ 
+ The chat supports follow-up questions, retry, stop, and a new conversation. History is kept in memory until the page is reloaded; only the latest 12 messages are sent as context. Messages are processed by Google Gemini. Email contents and attachments are processed by Resend. Neither handler logs message contents or API keys.
+ 
+@@ -87,3 +87,10 @@ Add the server variables above to **Project → Settings → Environment Variabl
+ Vercel discovers `api/send-email.js` and `api/chat.js` as Node functions; their time budget is 30 seconds. A verified Resend sender domain is recommended for production; `onboarding@resend.dev` is limited by Resend's testing rules. The functions reject cross-origin browser requests, validate body/attachment sizes, and have a per-instance request limit (5 emails per 10 minutes, 20 chat requests per minute per IP). These memory-based limits reset on cold starts and do not coordinate across instances. Configure Vercel Firewall rate limits on both API paths for deployment-wide abuse control.
+ 
+ `npm test` includes mocked provider success/failure, validation, rate limiting, bounded history, raw local request parsing, duplicate-send protection, and client timeout handling. It does not send real email or use a live Gemini key.
++
++### UI editing
++
++- Menu icon sizing: `src/data/profile.js` → `menuBar.iconSize` (12–28 px), with `iconScales` for individual Apple, Wi-Fi, profile, search, and assistant artwork. Icon-button padding is separated from text menus in `src/reference-ui.css`.
++- Search/Ask layout: `src/components/Spotlight.jsx` and `SiriAssistant.css`; conversation rendering: `SiriAssistant.jsx`.
++- Mail uses the available window height. The message scrolls internally; very short resized windows retain an outer scroll for access to every field.
++- Notes content and experience links: `src/data/notes.js`.
+diff --git a/src/App.jsx b/src/App.jsx
+index aabea5c..0c19383 100644
+--- a/src/App.jsx
++++ b/src/App.jsx
+@@ -21,7 +21,6 @@ import TrashApp from './components/TrashApp.jsx';
+ import FileInfo from './components/FileInfo.jsx';
+ import Notifications from './components/Notifications.jsx';
+ import Spotlight from './components/Spotlight.jsx';
+-import SiriAssistant from './components/SiriAssistant.jsx';
+ import { useAssistantChat } from './hooks/useAssistantChat.js';
+ 
+ export default function App() {
+@@ -30,16 +29,16 @@ export default function App() {
+   const files = useProjectFiles(projects);
+   const [skill, setSkill] = useState(null);
+   const [spotlight, setSpotlight] = useState(null);
+-  const [assistant, setAssistant] = useState(null);
+   const chat = useAssistantChat();
+   const [noteRequest, setNoteRequest] = useState(null);
+   const [notificationReplay, setNotificationReplay] = useState(0);
+   const [desktopIconsVisible, setDesktopIconsVisible] = useState(true);
+-  const overlay = Boolean(skill || spotlight || assistant);
++  const overlay = Boolean(skill || spotlight);
+   const active = manager.windows.find(item => item.id === manager.activeId);
+   const skillApp = dockApps.find(app => app.id === skill?.id);
+   const openIds = new Set(manager.windows.filter(item => item.kind !== 'project').map(item => item.id));
+   if (skill) openIds.add(skill.id);
++  if (spotlight?.mode === 'ask') openIds.add('assistant');
+   const apps = useMemo(() => dockApps.map(app => app.id === 'trash' && files.trashed.length
+     ? { ...app, icon: app.fullIcon || app.icon } : app), [files.trashed.length]);
+ 
+@@ -56,6 +55,7 @@ export default function App() {
+       title: `${entry.title} — ${profile.finderApp.infoTitle}` }, trigger);
+   }
+   function openApp(app, trigger) {
++    if (app.kind === 'assistant') { menuAction('assistant', trigger); return; }
+     if (app.kind === 'skill') setSkill({ id: app.id, trigger });
+     else manager.open({ id: app.id, kind: app.kind, title: app.label }, trigger);
+   }
+@@ -64,9 +64,9 @@ export default function App() {
+     openApp(dockApps.find(app => app.id === 'notes'), trigger);
+   }
+   function menuAction(action, trigger, extra) {
+-    if (action === 'assistant') { setSkill(null); setSpotlight(null); setAssistant({ trigger }); return; }
++    if (action === 'assistant') { setSkill(null); setSpotlight({ trigger, mode: 'ask' }); return; }
+     if (action === 'toggle-desktop-icons') { setDesktopIconsVisible(visible => !visible); return; }
+-    if (action === 'search') { chat.stop(); setAssistant(null); setSkill(null); setSpotlight({ trigger }); return; }
++    if (action === 'search') { setSkill(null); setSpotlight({ trigger, mode: 'search' }); return; }
+     if (action === 'about') { showBio(trigger); return; }
+     if (action === 'welcome') { setNotificationReplay(value => value + 1); return; }
+     if (action === 'desktop') { manager.windows.filter(item => !item.minimized).forEach(item => manager.minimize(item.id)); return; }
+@@ -84,8 +84,8 @@ export default function App() {
+   useEffect(() => {
+     const keyboardSearch = event => {
+       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k' && !event.isComposing) {
+-        event.preventDefault(); chat.stop(); setAssistant(null); setSkill(null);
+-        setSpotlight(current => current || { trigger: document.querySelector('[data-search-trigger]') || document.activeElement });
++        event.preventDefault(); setSkill(null);
++        setSpotlight(current => ({ trigger: current?.trigger || document.querySelector('[data-search-trigger]') || document.activeElement, mode: 'search' }));
+       }
+     };
+     document.addEventListener('keydown', keyboardSearch);
+@@ -145,7 +145,8 @@ export default function App() {
+             if (item.action === 'notes') showBio(document.querySelector('[data-dock-app="notes"]') || trigger, item.noteId);
+           }} />
+         <AnimatePresence>
+-          {spotlight && <Spotlight projects={files.available} apps={apps} trigger={spotlight.trigger}
++          {spotlight && <Spotlight projects={files.available} apps={apps} trigger={spotlight.trigger} mode={spotlight.mode} chat={chat}
++            onModeChange={mode => setSpotlight(current => ({ ...current, mode }))}
+             onClose={() => setSpotlight(null)} onSelect={entry => {
+               const trigger = spotlight.trigger;
+               setSpotlight(null);
+@@ -153,14 +154,6 @@ export default function App() {
+               else openApp(entry.app, trigger);
+             }} />}
+         </AnimatePresence>
+-        <AnimatePresence>
+-          {assistant && <SiriAssistant chat={chat} trigger={assistant.trigger}
+-            onClose={() => { chat.stop(); setAssistant(null); }}
+-            onContact={() => {
+-              chat.stop(); setAssistant(null);
+-              openApp(dockApps.find(app => app.id === 'mail'), document.querySelector('[data-dock-app="mail"]'));
+-            }} />}
+-        </AnimatePresence>
+         <AnimatePresence>
+           {skillApp && <AlertDialog key={skillApp.id} app={skillApp} dialog={skillDialogs[skillApp.id]} trigger={skill.trigger}
+             onClose={() => setSkill(null)} onContact={openContact} />}
+diff --git a/src/assets/dock/assistant.svg b/src/assets/dock/assistant.svg
+new file mode 100644
+index 0000000..4e936fc
+--- /dev/null
++++ b/src/assets/dock/assistant.svg
+@@ -0,0 +1 @@
++<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64"><defs><radialGradient id="a" cx=".45" cy=".35" r=".7"><stop stop-color="#41515d"/><stop offset=".55" stop-color="#12191f"/><stop offset=".82" stop-color="#555b65"/><stop offset="1" stop-color="#a8d5df"/></radialGradient><linearGradient id="b"><stop stop-color="#4fe4f1"/><stop offset=".38" stop-color="#e8ffff"/><stop offset=".62" stop-color="#f7a6d3"/><stop offset="1" stop-color="#8a78fa"/></linearGradient><filter id="c"><feGaussianBlur stdDeviation="2"/></filter></defs><circle cx="32" cy="32" r="28" fill="url(#a)" stroke="#b2dbe8" stroke-width=".8"/><ellipse cx="32" cy="31" rx="24" ry="4" transform="rotate(-15 32 31)" fill="url(#b)" filter="url(#c)"/><path d="M12 22C18 7 40 4 50 19" fill="none" stroke="#d8f4ff" stroke-opacity=".5" stroke-linecap="round"/><path d="M15 49Q31 61 49 47" fill="none" stroke="#fff" stroke-opacity=".2" stroke-width="3"/></svg>
+diff --git a/src/components/MailApp.css b/src/components/MailApp.css
+index 488f1bc..bcdd7ed 100644
+--- a/src/components/MailApp.css
++++ b/src/components/MailApp.css
+@@ -6,7 +6,6 @@
+ .mail-app .mail-compose-row input:focus-visible { box-shadow: none; outline: 2px solid var(--color-focus); outline-offset: 2px; border-radius: var(--radius-ui); }
+ .mail-compose-row .mail-recipient { color: var(--color-accent); font-size: 12px; }
+ .mail-compose-body { padding: 18px 20px 20px; }
+-.mail-compose-intro { margin-bottom: 14px; color: var(--color-muted); font-size: 12px; line-height: 1.6; }
+ .mail-compose-body textarea { display: block; width: 100%; min-height: 150px; resize: vertical; padding: 12px; font-size: 13px; line-height: 1.65; }
+ .mail-attachment-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin: 12px 0; }
+ .mail-attachment-actions small { color: var(--color-muted); font-size: 11px; }
+@@ -16,14 +15,21 @@
+ .mail-feedback { margin: 0; padding: 10px 20px; border-bottom: 1px solid var(--color-divider); background: var(--color-secondary); font-size: 12px; line-height: 1.5; }
+ .mail-feedback--error { color: #9b2929; background: #fff1f0; }
+ .mail-feedback--success { color: #216b43; background: #edf8f1; }
+-.mail-compose-note { margin: 14px 0 0; color: var(--color-muted); font-size: 11px; line-height: 1.6; }
+ .mail-honeypot { display: none; }
+-.mail-other-links { display: grid; gap: 9px; padding: 18px 20px 22px; border-top: 1px solid var(--color-divider); }
+-.mail-other-links > span { color: var(--color-muted); font-size: 11px; }
+ @media (max-width: 768px) {
+   .mail-compose-fields { padding-inline: 16px; }
+   .mail-compose-row { min-height: 48px; }
+   .mail-app .mail-compose-row input, .mail-compose-body textarea { font-size: 16px; }
+-  .mail-compose-body, .mail-other-links { padding-inline: 16px; }
++  .mail-compose-body { padding-inline: 16px; }
+   .mail-attachment button { width: 44px; height: 44px; }
+ }
++
++/* Fill the available window; only very short resized windows need outer scrolling. */
++.window__content--mail { overflow: auto; }
++.mail-app { height: 100%; min-height: 420px; }
++.mail-app > form { height: 100%; display: flex; flex-direction: column; }
++.mail-compose-header, .mail-compose-fields { flex-shrink: 0; }
++.mail-compose-body { display: flex; flex-direction: column; flex: 1; min-height: 130px; padding-top: 12px; padding-bottom: 10px; }
++.mail-compose-body textarea { flex: 1; min-height: 60px; resize: none; padding: 6px 0; border: 0; border-radius: 0; background: transparent; }
++.mail-attachment-actions { flex-shrink: 0; margin: 10px 0 0; }
++@media (max-width: 768px) { .mail-app { min-height: 460px; } }
+diff --git a/src/components/MailApp.jsx b/src/components/MailApp.jsx
+index f86f09e..9e55f32 100644
+--- a/src/components/MailApp.jsx
++++ b/src/components/MailApp.jsx
+@@ -18,7 +18,6 @@ export default function MailApp({ contact }) {
+   const honeypot = useRef(null);
+   const busy = useRef(false);
+   const attempt = useRef(null);
+-  const links = contact.links.filter(link => link.href);
+ 
+   function selectAttachment(event) {
+     const file = event.target.files?.[0];
+@@ -55,7 +54,7 @@ export default function MailApp({ contact }) {
+       </header>
+         {pending && <p className="mail-feedback" role="status">Sending your message…</p>}
+         {error && <p className="mail-feedback mail-feedback--error" role="alert">{error}</p>}
+-        {sent && <p className="mail-feedback mail-feedback--success" role="status">Your message was sent. Thanks for reaching out!</p>}
++        {sent && <p className="mail-feedback mail-feedback--success" role="status">Message sent.</p>}
+       </div>
+       <fieldset className="mail-compose-fields" disabled={pending}>
+         <legend className="sr-only">Email details</legend>
+@@ -68,10 +67,9 @@ export default function MailApp({ contact }) {
+           value={subject} onChange={event => setSubject(event.target.value)} /></label>
+       </fieldset>
+       <div className="mail-compose-body">
+-        <p className="mail-compose-intro">{contact.message}</p>
+         <label className="sr-only" htmlFor={`${id}-message`}>Message</label>
+         <textarea id={`${id}-message`} name="message" required maxLength={10_000} disabled={pending}
+-          value={message} onChange={event => setMessage(event.target.value)} placeholder="Write your message…" rows={7} />
++          value={message} onChange={event => setMessage(event.target.value)} placeholder="Write your message…" rows={3} />
+         <div className="mail-honeypot" aria-hidden="true"><label>Leave this blank<input ref={honeypot} name="website" tabIndex={-1} autoComplete="off" /></label></div>
+         <div className="mail-attachment-actions">
+           <input ref={fileInput} type="file" className="sr-only" tabIndex={-1} aria-label="Choose attachment" onChange={selectAttachment} disabled={pending} />
+@@ -80,14 +78,9 @@ export default function MailApp({ contact }) {
+             <button type="button" aria-label="Remove attachment" disabled={pending} onClick={() => setAttachment(null)}><UIIcon name="close" size={12} /></button></span>
+             : <small>One file · up to 1.5 MB</small>}
+         </div>
+-        <p className="mail-compose-note">Your email address lets Perdana reply to you.
+-          {contact.email && <> Prefer your email app? <a href={`mailto:${contact.email}?subject=${encodeURIComponent(subject)}`}>Email Perdana</a>.</>}</p>
++
+       </div>
+     </form>
+-    {links.length > 0 && <footer className="mail-other-links"><span>{profile.ui.contactOptions}</span><ul className="contact-links">
+-      {links.map(link => <li key={link.id}><a href={link.href} target="_blank" rel="noopener noreferrer">
+-        <UIIcon name="link" size={16} /><span>{link.label}</span><UIIcon name="external" size={13} />
+-      </a></li>)}
+-    </ul></footer>}
++
+   </article>;
+ }
+diff --git a/src/components/MenuBar.jsx b/src/components/MenuBar.jsx
+index 6748075..5c0b7cb 100644
+--- a/src/components/MenuBar.jsx
++++ b/src/components/MenuBar.jsx
+@@ -6,11 +6,12 @@ import menuWifi from '../assets/ui/wifi.svg?no-inline';
+ import menuSearch from '../assets/ui/search.svg?no-inline';
+ import menuProfile from '../assets/ui/profile.svg?no-inline';
+ 
+-// Menu bar assets are explicit: local profile mappings cannot select older icons.
+-const MENU_ICON_SIZE = 17; // Wi-Fi is the shared size reference.
+-function MenuBarIcon({ src }) {
+-  return <img className="ui-icon" src={src} width={MENU_ICON_SIZE} height={MENU_ICON_SIZE}
+-    style={{ width: MENU_ICON_SIZE, height: MENU_ICON_SIZE, objectFit: 'contain' }} alt="" aria-hidden="true" draggable="false" />;
++// All menu artwork uses the same configurable box, including the assistant orb.
++function MenuBarIcon({ src, name, config }) {
++  const size = Math.min(28, Math.max(12, Number(config.iconSize) || 19));
++  const scale = config.iconScales?.[name] ?? 1;
++  return <img className="ui-icon" src={src} width={size} height={size}
++    style={{ width: size, height: size, objectFit: 'contain', transform: `scale(${scale})` }} alt="" aria-hidden="true" draggable="false" />;
+ }
+ 
+ const defaultClockOptions = { weekday: 'short', hour: '2-digit', minute: '2-digit', hour12: false };
+@@ -86,7 +87,7 @@ export default function MenuBar({ profile, active, windows = [], mobile, desktop
+   return <header ref={root} className="menu-bar" data-menu-bar onKeyDownCapture={panelKeys}>
+     <div className="menu-bar__identity">
+       <button type="button" className="menu-bar__brand menu-control" aria-label={config.brandLabel}
+-        onClick={event => onAction?.('about', event.currentTarget)}><MenuBarIcon src={menuApple} /></button>
++        onClick={event => onAction?.('about', event.currentTarget)}><MenuBarIcon src={menuApple} name="apple" config={config} /></button>
+       <strong className="menu-app-name">{active?.title || config.defaultApp}</strong>
+       <nav className="desktop-menus" aria-label={config.menusLabel}>
+         {config.menus.map(group => <div className={`desktop-menu ${group.secondary ? 'desktop-menu--secondary' : ''}`} key={group.id}
+@@ -110,13 +111,13 @@ export default function MenuBar({ profile, active, windows = [], mobile, desktop
+       </nav>
+     </div>
+     <div className="menu-status">
+-      <span className="menu-indicator" role="img" aria-label={config.wifiLabel} title={config.wifiLabel}><MenuBarIcon src={menuWifi} /></span>
++      <span className="menu-indicator" role="img" aria-label={config.wifiLabel} title={config.wifiLabel}><MenuBarIcon src={menuWifi} name="wifi" config={config} /></span>
+       <button type="button" className="menu-control menu-status-button menu-profile-button" aria-label="About Perdana" title="About Perdana"
+-        onClick={event => onAction?.('about', event.currentTarget)}><MenuBarIcon src={menuProfile} /></button>
++        onClick={event => onAction?.('about', event.currentTarget)}><MenuBarIcon src={menuProfile} name="profile" config={config} /></button>
+       <button type="button" className="menu-control menu-status-button" data-search-trigger aria-label={config.searchLabel} title={config.searchLabel}
+-        onClick={event => onAction?.('search', event.currentTarget)}><MenuBarIcon src={menuSearch} /></button>
++        onClick={event => onAction?.('search', event.currentTarget)}><MenuBarIcon src={menuSearch} name="search" config={config} /></button>
+       <button type="button" className="menu-control menu-status-button" aria-label="Ask perdana.ai" title="Ask perdana.ai"
+-        aria-haspopup="dialog" onClick={event => onAction?.('assistant', event.currentTarget)}><AssistantOrb small /></button>
++        aria-haspopup="dialog" onClick={event => onAction?.('assistant', event.currentTarget)}><span className="menu-assistant-icon" style={{ width: Math.min(28, Math.max(12, Number(config.iconSize) || 19)), height: Math.min(28, Math.max(12, Number(config.iconSize) || 19)), transform: `scale(${config.iconScales?.assistant ?? 1})` }}><AssistantOrb small /></span></button>
+       <time dateTime={now.toISOString()} aria-label={formatter.format(now)}>
+         <span className="clock-full">{formatter.format(now)}</span><span className="clock-compact" aria-hidden="true">{compactFormatter.format(now)}</span>
+       </time>
+diff --git a/src/components/SiriAssistant.css b/src/components/SiriAssistant.css
+index dc778e0..1e8a9fa 100644
+--- a/src/components/SiriAssistant.css
++++ b/src/components/SiriAssistant.css
+@@ -1,67 +1,60 @@
+-.assistant-orb { position: relative; display: inline-grid; place-items: center; flex: 0 0 auto; width: 52px; height: 52px; overflow: hidden; isolation: isolate; border-radius: 50%; background: #f4f3ff; box-shadow: inset 0 0 0 1px rgb(255 255 255 / .9), 0 4px 16px rgb(104 102 190 / .12); }
+-.assistant-orb::before { content: ''; position: absolute; inset: -25%; background: conic-gradient(from 30deg, #60d9ed, #7f78ed, #d683df, #f1a9bb, #6fa8f7, #60d9ed); filter: blur(7px); opacity: .9; }
+-.assistant-orb > span { position: absolute; inset: 13%; z-index: 1; border-radius: 50%; background: radial-gradient(ellipse at 36% 28%, rgb(255 255 255 / .95), rgb(255 255 255 / .06) 60%), radial-gradient(ellipse at 70% 80%, #aa7feb, transparent 70%); box-shadow: inset 0 0 8px #fff; }
+-.assistant-orb--small { width: 18px; height: 18px; box-shadow: inset 0 0 0 .5px #fff; }
+-.assistant-orb--small::before { filter: blur(2px); }
+-.assistant-orb[data-active]::before { animation: assistant-orbit 3s linear infinite; }
+-@keyframes assistant-orbit { to { transform: rotate(360deg); } }
+-.assistant-backdrop { position: fixed; inset: 0; z-index: 1600; background: rgb(20 25 45 / .08); }
+-.siri-assistant { position: absolute; top: calc(var(--menu-height) + var(--safe-top) + 12px); right: max(16px,var(--safe-right)); display: flex; flex-direction: column; width: min(380px,calc(100vw - 32px)); max-height: min(680px,calc(100dvh - var(--menu-height) - var(--safe-top) - var(--safe-bottom) - 30px)); min-height: 0; overflow: hidden; border: 1px solid rgb(255 255 255 / .85); border-radius: 18px; background: rgb(251 251 255 / .96); color: var(--color-text); box-shadow: 0 18px 64px rgb(20 24 46 / .22), 0 1px 6px rgb(20 24 46 / .08); -webkit-backdrop-filter: blur(24px); backdrop-filter: blur(24px); }
+-.assistant-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 11px 12px 0 18px; font-size: 10px; color: var(--color-muted); }
+-.assistant-toolbar > div { display: flex; align-items: center; gap: 6px; }
+-.assistant-text-button, .assistant-icon-button, .assistant-footer button { border: 0; background: transparent; }
+-.assistant-text-button { min-height: 28px; padding: 4px 6px; color: var(--color-muted); font-size: 11px; border-radius: var(--radius-ui); }
+-.assistant-icon-button { display: grid; place-items: center; width: 28px; height: 28px; padding: 4px; border-radius: 50%; background: rgb(0 0 0 / .05); }
+-.assistant-identity { display: flex; align-items: center; gap: 13px; padding: 16px 20px 20px; border-bottom: 1px solid var(--color-divider); }
+-.assistant-identity h2 { margin: 0 0 4px; font-size: 20px; letter-spacing: -.03em; }
+-.assistant-identity p { margin: 0; color: var(--color-muted); font-size: 11px; }
+-.assistant-conversation { min-height: 0; flex: 1 1 auto; overflow-y: auto; overscroll-behavior: contain; padding: 18px; scrollbar-width: thin; }
+-.assistant-welcome { padding: 5px 0 10px; }
+-.assistant-welcome h3 { margin-bottom: 7px; font-size: 14px; }
+-.assistant-welcome > p { color: var(--color-muted); font-size: 12px; line-height: 1.6; }
+-.assistant-suggestions { display: grid; gap: 7px; margin-top: 20px; }
+-.assistant-suggestions button { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 11px 12px; min-height: 38px; border: 1px solid rgb(113 105 168 / .13); border-radius: var(--radius-ui); background: rgb(255 255 255 / .65); text-align: left; font-size: 12px; }
+-.assistant-suggestions button:hover { background: #f0edfb; }
+-.assistant-message { margin-bottom: 16px; font-size: 13px; line-height: 1.65; }
+-.assistant-message-author { display: block; margin-bottom: 5px; font-size: 10px; color: var(--color-muted); }
++.assistant-orb { display: inline-block; position: relative; flex-shrink: 0; width: 52px; height: 52px; overflow: hidden; border-radius: 50%; background: radial-gradient(ellipse at 50% 52%, #d3f9ff 0%, #7fc8eb 8%, #827cc4 17%, #26343e 30%, #13191c 55%, #42494c 78%, #bce6eb 100%); box-shadow: inset 0 0 0 1px #c9f7ff80, inset 0 -7px 12px #ffffff28, 0 2px 8px #0003; }
++.assistant-orb::before { content: ''; position: absolute; inset: 36% 6%; border-radius: 50%; background: linear-gradient(110deg, #60d9ed, #eafaff 35%, #f1a9bb 60%, #8871e6); filter: blur(3px); transform: rotate(-15deg); }
++.assistant-orb > span { position: absolute; inset: 4%; border-radius: 50%; box-shadow: inset 0 1px 3px #ffffff9c; }
++.assistant-orb--small { width: 24px; height: 24px; }
++.assistant-orb[data-active]::before { animation: assistant-orbit 2s ease-in-out infinite alternate; }
++@keyframes assistant-orbit { to { transform: rotate(165deg) scale(.75,1.6); filter: blur(1px); } }
++.menu-assistant-icon { display: inline-flex; flex: 0 0 auto; }
++.menu-assistant-icon .assistant-orb { width: 100%; height: 100%; }
++.ask-backdrop { z-index: 1600; padding-top: max(90px, 15vh); background: rgb(0 0 0 / .08); }
++.ask-surface { width: min(600px,100%); max-height: calc(100dvh - max(90px,15vh) - 32px); display: flex; flex-direction: column; min-height: 0; color: #fff; color-scheme: dark; outline: none; }
++.ask-controls { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 0 10px 9px; flex-shrink: 0; }
++.ask-modes, .ask-actions { display: flex; align-items: center; gap: 4px; }
++.ask-modes { padding: 3px; border-radius: 22px; background: #17191dbf; box-shadow: inset 0 0 0 1px #ffffff24; backdrop-filter: blur(24px); }
++.ask-modes button { border: 0; background: transparent; color: #ffffffad; border-radius: 20px; padding: 7px 15px; font-size: 12px; }
++.ask-modes button[aria-pressed="true"] { background: #ffffff2b; color: #fff; }
++.ask-icon-button { display: grid; place-items: center; flex: 0 0 32px; width: 32px; height: 32px; padding: 4px; border: 0; border-radius: 50%; background: #ffffff20; color: white; font-size: 22px; line-height: 1; }
++.ask-actions .ask-icon-button { background: #202126b3; backdrop-filter: blur(24px); }
++.ask-surface .ui-icon { filter: brightness(0) invert(1); }
++.ask-field, .ask-results, .ask-surface--conversation { border: 1px solid #ffffff38; background: linear-gradient(180deg,#111214ed,#353432b8); box-shadow: 0 16px 50px #0003, inset 0 1px 1px #ffffff12; backdrop-filter: blur(32px) saturate(1.25); -webkit-backdrop-filter: blur(32px) saturate(1.25); }
++.ask-field { display: flex; align-items: center; gap: 12px; min-height: 72px; flex-shrink: 0; padding: 14px 20px; border-radius: 40px; }
++.ask-surface .ask-field input { width: 100%; min-width: 0; flex: 1; padding: 6px 0; border: 0; outline: none; background: transparent; color: white; font-size: 21px; letter-spacing: -.025em; box-shadow: none !important; }
++.ask-surface .ask-field input::placeholder { color: #ffffffa3; }
++.ask-field:focus-within { border-color: #ffffff80; }
++.ask-send { font-size: 25px; background: #ffffffda; color: #232329; }
++.ask-send:disabled { opacity: .3; }
++.ask-results { min-height: 0; overflow: auto; margin-top: 10px; padding: 8px; border-radius: 25px; scrollbar-width: thin; }
++.ask-result { display: flex; align-items: center; gap: 13px; width: 100%; min-height: 56px; padding: 9px 13px; border: 0; border-radius: 16px; background: transparent; color: white; text-align: left; }
++.ask-result > img { width: 30px; height: 30px; object-fit: contain; }
++.ask-result > span:not(.assistant-orb) { flex: 1; min-width: 0; }
++.ask-result strong { display: block; font-size: 13px; font-weight: 500; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
++.ask-result small { color: #ffffffa0; font-size: 11px; }
++.ask-result[aria-selected="true"] { background: #ffffff24; }
++.ask-surface--conversation { width: min(480px,100%); height: min(600px,calc(100dvh - max(90px,15vh) - 32px)); border-radius: 30px; overflow: hidden; }
++.ask-surface--conversation .ask-controls { padding: 14px 14px 8px; }
++.ask-surface--conversation .ask-field { margin: 8px 14px 14px; min-height: 54px; padding: 8px 12px; background: #ffffff12; box-shadow: none; backdrop-filter: none; border-color: #ffffff24; }
++.ask-surface--conversation .ask-surface .ask-field input { font-size: 16px; }
++.assistant-conversation { min-height: 0; flex: 1; overflow-y: auto; overscroll-behavior: contain; padding: 22px; scrollbar-width: thin; }
++.assistant-message { margin-bottom: 22px; font-size: 14px; line-height: 1.65; }
+ .assistant-message p { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+-.assistant-message--user { margin-left: 32px; padding: 10px 12px; border-radius: 12px 12px 3px 12px; background: #ece8fa; }
+-.assistant-message--ai { padding: 0 5px; }
+-.assistant-thinking { display: flex; align-items: center; gap: 8px; margin: 0; color: var(--color-muted); font-size: 11px; }
+-.assistant-thinking-dots { letter-spacing: 2px; color: #7b68b2; }
+-.assistant-error { margin: 0 16px 10px; padding: 10px 12px; border-radius: var(--radius-ui); background: #fff0ef; color: #9b2929; font-size: 12px; }
++.assistant-message--user { width: fit-content; max-width: 85%; margin-left: auto; padding: 10px 14px; border-radius: 18px 18px 5px 18px; background: #ffffff1c; }
++.assistant-message--ai { padding: 0 2px; }
++.assistant-thinking { display: flex; align-items: center; gap: 10px; color: #ffffffb0; font-size: 12px; }
++.assistant-error { flex-shrink: 0; margin: 0 20px; padding: 10px 12px; border-radius: 12px; background: #7b393954; font-size: 12px; }
+ .assistant-error p { margin: 0; line-height: 1.5; }
+-.assistant-error button { margin-top: 6px; min-height: 28px; padding: 3px 0; border: 0; background: transparent; color: inherit; text-decoration: underline; }
+-.assistant-composer { display: flex; align-items: flex-end; gap: 8px; flex-shrink: 0; margin: 0 14px; padding: 8px; border: 1px solid rgb(113 105 168 / .22); border-radius: 12px; background: #fff; }
+-.assistant-composer:focus-within { border-color: #8c79c5; box-shadow: 0 0 0 3px rgb(140 121 197 / .12); }
+-.siri-assistant .assistant-composer textarea { flex: 1; width: 100%; min-width: 0; min-height: 48px; max-height: 120px; resize: none; padding: 5px; border: 0; background: transparent; font-size: 13px; line-height: 1.5; }
+-.siri-assistant .assistant-composer textarea:focus-visible { outline: none; box-shadow: none; }
+-.assistant-send { display: grid; place-items: center; flex: 0 0 32px; width: 32px; height: 32px; border: 0; border-radius: 9px; background: #7863ae; }
+-.assistant-send .ui-icon { filter: brightness(0) invert(1); }
+-.assistant-stop { width: 10px; height: 10px; background: #fff; border-radius: 2px; }
+-.assistant-footer { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; padding: 11px 18px 14px; color: var(--color-muted); }
+-.assistant-footer > span { max-width: 190px; font-size: 9px; line-height: 1.5; }
+-.assistant-footer button { display: inline-flex; align-items: center; flex-shrink: 0; gap: 4px; padding: 0; min-height: 26px; color: #6b579e; font-size: 10px; }
+-@media (max-width: 768px) {
+-  .siri-assistant { right: max(10px,var(--safe-right)); width: calc(100vw - 20px - var(--safe-right) - var(--safe-left)); top: calc(var(--menu-height) + var(--safe-top) + 8px); max-height: calc(100dvh - var(--menu-height) - var(--safe-top) - var(--safe-bottom) - 20px); }
+-  .assistant-toolbar { padding-top: 5px; }
+-  .assistant-icon-button { width: 44px; height: 44px; }
+-  .assistant-text-button { min-height: 44px; }
+-  .siri-assistant .assistant-composer textarea { font-size: 16px; }
+-  .assistant-send { width: 44px; height: 44px; flex-basis: 44px; }
+-  .assistant-suggestions button, .assistant-error button, .assistant-footer button { min-height: 44px; }
++.assistant-error button { border: 0; background: transparent; color: inherit; text-decoration: underline; padding: 8px 0 0; }
++.assistant-stop { width: 11px; height: 11px; border-radius: 2px; background: white; }
++.ask-surface button:focus-visible { outline: 2px solid #d4e8ff; outline-offset: 2px; }
++@media (max-width: 768px), (max-height: 600px) {
++  .ask-backdrop { padding: calc(var(--safe-top) + 58px) 12px max(12px,var(--safe-bottom)); }
++  .ask-surface { max-height: calc(100dvh - var(--safe-top) - var(--safe-bottom) - 76px); }
++  .ask-surface--conversation { height: calc(100dvh - var(--safe-top) - var(--safe-bottom) - 76px); }
++  .ask-field { min-height: 64px; padding: 9px 14px; gap: 9px; }
++  .ask-surface .ask-field input { font-size: 18px; }
++  .ask-icon-button { width: 44px; height: 44px; flex-basis: 44px; }
++  .ask-modes button { min-height: 38px; }
++  .assistant-conversation { padding: 16px; }
+ }
+ @media (prefers-reduced-motion: reduce) { .assistant-orb[data-active]::before { animation: none; } }
+-@media (prefers-reduced-transparency: reduce) { .siri-assistant { background: #fbfbff; -webkit-backdrop-filter: none; backdrop-filter: none; } }
+-@media (forced-colors: active) { .siri-assistant { border: 1px solid CanvasText; background: Canvas; } .assistant-orb { border: 1px solid CanvasText; } .assistant-send { border: 1px solid ButtonText; } }
+-
+-@media (max-height: 600px) {
+-  .assistant-identity { padding: 8px 18px; }
+-  .assistant-identity .assistant-orb { width: 36px; height: 36px; }
+-  .assistant-identity h2 { font-size: 16px; }
+-  .assistant-identity p { display: none; }
+-  .assistant-footer { padding-block: 4px; }
+-  .assistant-footer > span { display: none; }
+-  .assistant-footer button { margin-left: auto; }
+-  .assistant-conversation { padding-block: 10px; }
+-}
++@media (prefers-reduced-transparency: reduce) { .ask-field, .ask-results, .ask-surface--conversation, .ask-modes { background: #25262a; backdrop-filter: none; -webkit-backdrop-filter: none; } }
++@media (forced-colors: active) { .ask-field, .ask-results, .ask-surface--conversation, .ask-modes { border: 1px solid CanvasText; background: Canvas; color: CanvasText; } .ask-surface button, .ask-surface .ask-field input { color: CanvasText; } .ask-result[aria-selected="true"] { background: Highlight; color: HighlightText; } }
+diff --git a/src/components/SiriAssistant.jsx b/src/components/SiriAssistant.jsx
+index 9ffe846..4217836 100644
+--- a/src/components/SiriAssistant.jsx
++++ b/src/components/SiriAssistant.jsx
+@@ -1,57 +1,20 @@
+ import { useEffect, useRef } from 'react';
+-import { motion, useIsPresent, useReducedMotion } from 'framer-motion';
+-import { useSurfaceFocus } from '../hooks/useSurfaceFocus.js';
+ import AssistantOrb from './AssistantOrb.jsx';
+-import UIIcon from './UIIcon.jsx';
+-import './SiriAssistant.css';
+ 
+-const suggestions = ['Tell me about Perdana', 'What kind of work does he do?', 'How can we work together?'];
+-
+-export default function SiriAssistant({ chat, trigger, onClose, onContact }) {
+-  const ref = useRef(null);
++// The conversation lives inside Spotlight; no second dialog or focus trap.
++export default function SiriAssistant({ chat }) {
+   const log = useRef(null);
+-  const present = useIsPresent();
+-  const reduced = useReducedMotion();
+-  useSurfaceFocus(ref, { active: present, modal: true, onClose, restoreTarget: trigger });
+   useEffect(() => {
+     if (log.current) log.current.scrollTop = log.current.scrollHeight;
+   }, [chat.messages, chat.pending, chat.error]);
+-  return <motion.div className="assistant-backdrop" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+-    transition={{ duration: .14 }} onPointerDown={event => { if (event.target === event.currentTarget) onClose(); }}>
+-    <motion.section ref={ref} role="dialog" aria-modal="true" aria-label="perdana.ai assistant" tabIndex={-1} inert={!present}
+-      className="siri-assistant" initial={reduced ? undefined : { y: -8, scale: .97 }} animate={{ y: 0, scale: 1 }}
+-      transition={{ type: 'spring', stiffness: 430, damping: 34 }}>
+-      <header className="assistant-toolbar"><span>Portfolio assistant</span><div>
+-        <button type="button" className="assistant-text-button" onClick={chat.clear} disabled={!chat.messages.length && !chat.draft}>New chat</button>
+-        <button type="button" className="assistant-icon-button" aria-label="Close assistant" onClick={onClose}><UIIcon name="close" size={14} /></button>
+-      </div></header>
+-      <div className="assistant-identity"><AssistantOrb active={chat.pending} /><div><h2>perdana.ai</h2><p>Ask a little. Get to know Perdana.</p></div></div>
+-      <div ref={log} className="assistant-conversation" role="log" aria-label="Conversation" aria-live="polite" aria-relevant="additions text">
+-        {!chat.messages.length && <div className="assistant-welcome"><h3>What would you like to know?</h3>
+-          <p>His work, experience, or the story behind this portfolio.</p>
+-          <div className="assistant-suggestions">{suggestions.map(question => <button type="button" key={question} onClick={() => chat.send(question)}>
+-            {question}<UIIcon name="chevron-right" size={12} /></button>)}</div>
+-        </div>}
+-        {chat.messages.map((message, index) => <div className={`assistant-message assistant-message--${message.sender}`} key={index}>
+-          <span className="assistant-message-author">{message.sender === 'user' ? 'You' : 'perdana.ai'}</span><p>{message.text}</p>
+-        </div>)}
+-        {chat.pending && <p className="assistant-thinking" role="status"><span className="assistant-thinking-dots" aria-hidden="true">•••</span>Thinking…</p>}
+-      </div>
+-      {chat.error && <div className="assistant-error"><p role="alert">{chat.error}</p>
+-        {chat.canRetry && <button type="button" onClick={chat.retry} disabled={chat.pending}>Try again</button>}</div>}
+-      <form className="assistant-composer" onSubmit={event => { event.preventDefault(); chat.send(chat.draft); }}>
+-        <label className="sr-only" htmlFor="assistant-prompt">Ask about Perdana</label>
+-        <textarea id="assistant-prompt" data-autofocus value={chat.draft} onChange={event => chat.setDraft(event.target.value)}
+-          placeholder="Ask about Perdana…" rows={2} maxLength={4000} onKeyDown={event => {
+-            if (event.key === 'Enter' && !event.shiftKey && !event.nativeEvent.isComposing && !event.repeat) {
+-              event.preventDefault(); chat.send(chat.draft);
+-            }
+-          }} />
+-        {chat.pending ? <button type="button" className="assistant-send" aria-label="Stop response" onClick={chat.stop}><span className="assistant-stop" /></button>
+-          : <button type="submit" className="assistant-send" aria-label="Send question" disabled={!chat.draft.trim()}><UIIcon name="send" size={17} /></button>}
+-      </form>
+-      <footer className="assistant-footer"><span>AI answers may be imperfect. Messages go to Google Gemini.</span>
+-        <button type="button" onClick={onContact}>Contact Perdana<UIIcon name="external" size={11} /></button></footer>
+-    </motion.section>
+-  </motion.div>;
++  return <>
++    <div ref={log} className="assistant-conversation" role="log" aria-label="Conversation" aria-live="polite" aria-relevant="additions text">
++      {chat.messages.map((message, index) => <div className={`assistant-message assistant-message--${message.sender}`} key={index}>
++        <span className="sr-only">{message.sender === 'user' ? 'You' : 'perdana.ai'}: </span><p>{message.text}</p>
++      </div>)}
++      {chat.pending && <div className="assistant-thinking" role="status"><AssistantOrb active small /><span>Thinking…</span></div>}
++    </div>
++    {chat.error && <div className="assistant-error"><p role="alert">{chat.error}</p>
++      {chat.canRetry && <button type="button" onClick={chat.retry} disabled={chat.pending}>Try again</button>}</div>}
++  </>;
+ }
+diff --git a/src/components/Spotlight.jsx b/src/components/Spotlight.jsx
+index a6ef18a..efbecac 100644
+--- a/src/components/Spotlight.jsx
++++ b/src/components/Spotlight.jsx
+@@ -1,49 +1,88 @@
+ import { useEffect, useId, useMemo, useRef, useState } from 'react';
+ import { motion, useIsPresent, useReducedMotion } from 'framer-motion';
+-import { profile } from '../data/profile.js';
+ import { searchPortfolio } from '../utils/search.js';
+ import { useSurfaceFocus } from '../hooks/useSurfaceFocus.js';
+ import UIIcon from './UIIcon.jsx';
++import AssistantOrb from './AssistantOrb.jsx';
++import SiriAssistant from './SiriAssistant.jsx';
++import './SiriAssistant.css';
+ 
+-export default function Spotlight({ projects, apps, trigger, onClose, onSelect }) {
++// Search and Ask share a single modal and focus lifecycle, regardless of opener.
++export default function Spotlight({ projects, apps, trigger, mode = 'search', chat, onModeChange, onClose, onSelect }) {
+   const ref = useRef(null);
++  const input = useRef(null);
+   const id = useId();
+   const [query, setQuery] = useState('');
+   const [selection, setSelection] = useState(0);
+   const reduced = useReducedMotion();
+   const present = useIsPresent();
+-  const text = profile.spotlight;
+-  const results = useMemo(() => searchPortfolio(query, projects, apps), [query, projects, apps]);
++  const asking = mode === 'ask';
++  const conversation = asking && chat.messages.length > 0;
++  const value = asking ? chat.draft : query;
++  const results = useMemo(() => query.trim() ? [
++    ...searchPortfolio(query, projects, apps),
++    { id: 'ask-question', title: query.trim(), subtitle: 'Ask perdana.ai', type: 'ask' },
++  ] : [], [query, projects, apps]);
+   const index = Math.min(selection, Math.max(results.length - 1, 0));
+   useSurfaceFocus(ref, { active: present, modal: true, onClose, restoreTarget: trigger });
+   useEffect(() => {
+     ref.current?.querySelector('[aria-selected="true"]')?.scrollIntoView({ block: 'nearest' });
+   }, [index, query]);
+-  return <motion.div className="spotlight-backdrop" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: .12 }}
+-    onPointerDown={event => { if (event.target === event.currentTarget) onClose(); }}>
+-    <motion.section ref={ref} role="dialog" aria-modal="true" aria-label={text.title} tabIndex={-1} inert={!present} className="spotlight"
+-      initial={reduced ? undefined : { y: -8, scale: .98 }} animate={{ y: 0, scale: 1 }} transition={{ type: 'spring', stiffness: 440, damping: 34 }}>
+-      <div className="spotlight-field"><UIIcon name="search" size={25} />
+-        <input data-autofocus role="combobox" aria-label={text.title} aria-autocomplete="list" aria-expanded={results.length > 0}
+-          aria-controls={`${id}-results`} aria-activedescendant={results.length ? `${id}-${index}` : undefined}
+-          value={query} placeholder={text.placeholder} onChange={event => { setQuery(event.target.value); setSelection(0); }}
++  useEffect(() => { input.current?.focus({ preventScroll: true }); }, [mode]);
++  function changeMode(next) {
++    if (next === 'ask' && query.trim()) { chat.setDraft(query); setQuery(''); }
++    onModeChange(next); setSelection(0);
++  }
++  function choose(entry) {
++    if (entry.type === 'ask') { onModeChange('ask'); chat.send(query); setQuery(''); }
++    else onSelect(entry);
++  }
++  function submit(event) {
++    event.preventDefault();
++    if (asking) chat.send(value);
++    else if (results[index]) choose(results[index]);
++  }
++  return <motion.div className="spotlight-backdrop ask-backdrop" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
++    transition={{ duration: .14 }} onPointerDown={event => { if (event.target === event.currentTarget) onClose(); }}>
++    <motion.section ref={ref} role="dialog" aria-modal="true" aria-label="Search or Ask" tabIndex={-1} inert={!present}
++      className={`ask-surface${conversation ? ' ask-surface--conversation' : ''}`}
++      initial={reduced ? undefined : { y: -8, scale: .98 }} animate={{ y: 0, scale: 1 }}
++      transition={{ type: 'spring', stiffness: 430, damping: 34 }}>
++      <div className="ask-controls">
++        <div className="ask-modes" role="group" aria-label="Search or Ask mode">
++          <button type="button" aria-pressed={!asking} onClick={() => changeMode('search')}>Search</button>
++          <button type="button" aria-pressed={asking} onClick={() => changeMode('ask')}>Ask</button>
++        </div>
++        <div className="ask-actions">
++          {asking && chat.messages.length > 0 && <button type="button" className="ask-icon-button" aria-label="New chat" title="New chat" onClick={() => { chat.clear(); input.current?.focus(); }}><svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><path d="M10 4v12M4 10h12" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /></svg></button>}
++          <button type="button" className="ask-icon-button" aria-label="Close Search or Ask" onClick={onClose}><UIIcon name="close" size={16} /></button>
++        </div>
++      </div>
++      {conversation && <SiriAssistant chat={chat} />}
++      <form className="ask-field" onSubmit={submit}>
++        {asking ? <AssistantOrb active={chat.pending} small /> : <UIIcon name="search" size={23} />}
++        <input ref={input} data-autofocus value={value} maxLength={4000} autoComplete="off"
++          aria-label={asking ? 'Ask about Perdana' : 'Search portfolio'} placeholder={asking ? 'Ask about Perdana…' : 'Search or Ask'}
++          role={asking ? undefined : 'combobox'} aria-autocomplete={asking ? undefined : 'list'}
++          aria-expanded={asking ? undefined : results.length > 0} aria-controls={asking ? undefined : `${id}-results`}
++          aria-activedescendant={!asking && results.length ? `${id}-${index}` : undefined}
++          onChange={event => { asking ? chat.setDraft(event.target.value) : setQuery(event.target.value); setSelection(0); }}
+           onKeyDown={event => {
+-            if (['ArrowDown', 'ArrowUp'].includes(event.key) && results.length) {
++            if (event.nativeEvent.isComposing || event.repeat) { if (event.key === 'Enter') event.preventDefault(); return; }
++            if (!asking && ['ArrowDown', 'ArrowUp'].includes(event.key) && results.length) {
+               event.preventDefault(); setSelection((index + (event.key === 'ArrowDown' ? 1 : -1) + results.length) % results.length);
+             }
+-            if (event.key === 'Enter' && results[index]) { event.preventDefault(); onSelect(results[index]); }
+           }} />
+-        <button type="button" className="spotlight-close" aria-label={profile.ui.close} onClick={onClose}><UIIcon name="close" size={16} /></button>
+-      </div>
+-      <div className="spotlight-results" id={`${id}-results`} role="listbox" aria-label={text.resultsLabel}>
++        {asking && chat.pending ? <button type="button" className="ask-icon-button" aria-label="Stop response" onClick={chat.stop}><span className="assistant-stop" /></button>
++          : <button type="submit" className="ask-icon-button ask-send" aria-label={asking ? 'Send question' : 'Open result'} disabled={!value.trim()}><span aria-hidden="true">↑</span></button>}
++      </form>
++      {!asking && results.length > 0 && <div className="ask-results" id={`${id}-results`} role="listbox" aria-label="Search results">
+         {results.map((entry, itemIndex) => <button key={entry.id} id={`${id}-${itemIndex}`} type="button" role="option" tabIndex={-1}
+-          aria-selected={index === itemIndex} className="spotlight-result" onMouseMove={() => setSelection(itemIndex)} onClick={() => onSelect(entry)}>
+-          <img src={entry.icon} width="32" height="32" alt="" /><span><strong>{entry.title}</strong><small>{entry.subtitle || text.application}</small></span>
+-          <UIIcon name="chevron-right" size={14} />
++          aria-selected={index === itemIndex} className="ask-result" onMouseMove={() => setSelection(itemIndex)} onClick={() => choose(entry)}>
++          {entry.type === 'ask' ? <AssistantOrb small /> : <img src={entry.icon} width="30" height="30" alt="" />}
++          <span><strong>{entry.title}</strong><small>{entry.subtitle || 'Application'}</small></span><UIIcon name="chevron-right" size={12} />
+         </button>)}
+-      </div>
+-      {!results.length && <p className="spotlight-empty" role="status">{text.empty}</p>}
+-      <footer>{text.hint}</footer>
++      </div>}
+     </motion.section>
+   </motion.div>;
+ }
+diff --git a/src/data/notes.js b/src/data/notes.js
+index 8925b36..44b0546 100644
+--- a/src/data/notes.js
++++ b/src/data/notes.js
+@@ -93,6 +93,13 @@ export const notes = [
+             },
+             "; approximately 95% of clients were international."
+           ]
++        ],
++        "links": [
++          {
++            "id": "conania",
++            "label": "Conania on Fiverr",
++            "href": "https://www.fiverr.com/conania"
++          }
+         ]
+       },
+       {
+@@ -140,6 +147,13 @@ export const notes = [
+             " name and designed its visual identity."
+           ],
+           "Produced social media graphics and Tokopedia product listing assets."
++        ],
++        "links": [
++          {
++            "id": "mayora",
++            "label": "Mayora Official on Instagram",
++            "href": "https://www.instagram.com/mayoraofficial/"
++          }
+         ]
+       },
+       {
+@@ -201,26 +215,12 @@ export const notes = [
+             },
+             "3.70/4.00."
+           ]
+-        ],
+-        "links": [
+-          {
+-            "id": "ikj",
+-            "label": "Visit Institut Kesenian Jakarta",
+-            "href": "https://www.ikj.ac.id/"
+-          }
+         ]
+       },
+       {
+         "title": "Google UX Design Professional Certificate",
+         "meta": "August 2026 · Google / Coursera",
+-        "description": "Completed in August 2026.",
+-        "links": [
+-          {
+-            "id": "ux-program",
+-            "label": "About the Google UX Design programme",
+-            "href": "https://grow.google/certificates/ux-design/"
+-          }
+-        ]
++        "description": "Completed in August 2026."
+       }
+     ]
+   },
+diff --git a/src/data/profile.js b/src/data/profile.js
+index b45b5bf..4911c32 100644
+--- a/src/data/profile.js
++++ b/src/data/profile.js
+@@ -92,6 +92,9 @@ export const profile = {
+     ],
+   },
+   menuBar: {
++    // Shared rendered size (px); scales allow optical adjustment of individual artwork.
++    iconSize: 19,
++    iconScales: { apple: 1, wifi: 1, profile: 1, search: 1, assistant: 1 },
+     menusLabel: 'Portfolio menu', defaultApp: 'Finder',
+     wifiLabel: 'Wi-Fi icon (visual indicator)', batteryLabel: 'Battery icon (visual indicator)',
+     searchLabel: 'Search portfolio',
+@@ -186,7 +189,6 @@ export const profile = {
+ 
+   contact: {
+     title: 'Let’s make something good.',
+-    message: 'Tell me what you’re working on, what you need, and when you need it. We can take it from there.',
+     email: 'perdanakurniawan25@gmail.com',
+     emailLabel: 'Email me',
+     emailPlaceholder: 'Email will be added soon.',
+@@ -209,6 +211,7 @@ export const dockApps = [
+   { id: 'gallery', label: 'Gallery', kind: 'gallery', dividerBefore: true, icon: galleryIcon, fallbackIcon: makeIcon('G', '#C4D8F5', '#7398D1', '#243B61') },
+   { id: 'notes', label: 'Notes', kind: 'notes', icon: notesIcon, fallbackIcon: makeIcon('≡', '#FFF0A2', '#EBC958', '#604F25') },
+   { id: 'mail', label: 'Mail', kind: 'mail', icon: mailIcon, fallbackIcon: makeIcon('@', '#94DAD2', '#3B989E') },
++  { id: 'assistant', label: 'Siri · perdana.ai', kind: 'assistant', icon: new URL('../assets/dock/assistant.svg', import.meta.url).href, fallbackIcon: makeIcon('AI', '#9ADDF2', '#8A65CC') },
+   { id: 'trash', label: 'Trash', kind: 'trash', dividerBefore: true, icon: trashIcon, fullIcon: trashFullIcon, fallbackIcon: makeIcon('⌑', '#E4E8EC', '#A3ABB4', '#45505C') },
+ ];
+ 
+diff --git a/src/reference-ui.css b/src/reference-ui.css
+index 4d8646f..5ce3667 100644
+--- a/src/reference-ui.css
++++ b/src/reference-ui.css
+@@ -305,3 +305,7 @@
+   text-shadow: var(--shadow-label);
+ }
+ 
++
++/* Icon controls must not inherit the text-menu's horizontal padding. */
++.menu-bar .menu-bar__brand, .menu-bar .menu-status-button { padding: 0; }
++.menu-bar .menu-bar__brand .ui-icon, .menu-bar .menu-status .ui-icon { max-width: none; }
